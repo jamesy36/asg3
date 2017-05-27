@@ -10,7 +10,7 @@ sites = []
 
 stop = False #if a process gets stopped it'll be true
 
-class Paxos(object):
+class PRM(object):
 
 	def _init_(self, index, id ):
 		self.accepts = dict()
@@ -49,8 +49,8 @@ class Paxos(object):
 
 
 
-	def printFiles(object):
-		for data in the object:
+	def printFiles(log):
+		for data in the log:
 			print(data[0])
 
 	def merge(files)
@@ -74,11 +74,44 @@ class Paxos(object):
 
 
 
+	def acknowledgeCheck(logs):
+		for ack in logs:
+			if(ack[2][0] != None and ack[2][1] != None ):
+				return False
 
-	
-	
+		return True  
+
+
+	def highestBallot(logs):
+		ballotNum = 0
+		site = 0
+		highest = [0,0]
+		for ack in logs:
+			if(logs[0][0] > ballotNum or (logs[0][0] == balllotNum and log[0][1] > site)):
+				ballotNum = logs[0][1]
+				site = logs[0][1]
+				highest = [ballotNum, site]
+
+		return highest
+
+
+	def receive(channels):
+		global stop
+
+		for i in channels.keys():
+			sock = channels.get(i)
+			ready = select.select([sock], [], [], 1)
+			if(ready[0]):
+				data = sock.recv(1024).decode()
+				splitData = data.split("*")
+				dataList = splitData[0].split()
+				print(dataList)
+
+				if
+
 
 	def rcvPrep(self, data, channel):
+
 
 
 	def rcvAck(self, data, channel):
