@@ -7,10 +7,15 @@ incomingTCP = dict()
 outgoingTCP = dict()
 sites = []
 
+log = [] #holds all of the instances for paxos during the process
 
 stop = False #if a process gets stopped it'll be true
 
+
+
 class PRM(object):
+
+	prm = PRM()
 
 	def _init_(self, index, id ):
 		self.accepts = dict()
@@ -107,7 +112,42 @@ class PRM(object):
 				dataList = splitData[0].split()
 				print(dataList)
 
-				if
+				if(not dataList or stop):
+					print("process has been stopped/the selected node is empty")
+					continue
+				elif(dataList[0].find("total") != -1):
+					print("total")
+				elif(dataList[0].find("print") != -1):
+					print("print")
+					printFiles(log) 
+				elif(dataList[0].find("merge") != -1):
+					print("merge")
+					f1 = log[int(dataList[1])][0]
+					f2 = log[int(dataList[2])][0]
+					files = [f1, f2]
+					merge(files)
+				elif(dataList[0].find("replicate") != -1):
+					print("replicate")
+					prm.ballotNum[0] += 1
+					prm.ballotNum[1] = site
+					prm.propVal[0] = dataList[1]
+					prm.leader = True
+					prepSend = "prepare" + str(prm.ballotNum[0]) + " " + str(prm.balltNum[1]) + "*"
+					for c in outgoingTCP.keys():
+						if(c != "cli"):
+							sock = outgoingTCP.get(c)
+							sock.sendall(toSend.encode())
+				elif(dataList[0].find("stop") != -1):
+					stop = True
+				elif(dataList[0].find("resume") != -1):
+					print("resume")
+					stop = False
+
+
+
+#TODO: implement ack, rest of paxos implementation
+
+
 
 
 	def rcvPrep(self, data, channel):
@@ -118,7 +158,7 @@ class PRM(object):
 
 
 
-#either we can do this through messages, or like actual functions idk
+
 
 	def prepare(self, incomingMessages):
 
