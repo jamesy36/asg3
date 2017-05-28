@@ -25,14 +25,14 @@ It's imperative that you  run the PRM first, and make sure to run the CLI  only 
 
 
 Example:
-./PRM 1 setup.txt 
-./PRM 2 setup.txt 
-./PRM 3 setup.txt 
+python ./PRM.py 1 setup.txt 
+python ./PRM.py 2 setup.txt 
+python ./PRM.py 3 setup.txt 
 
 
-./cli 5006 5001
-./cli 5007 5002
-./cli 5008 5003
+python ./cli.py 5006 5001
+python ./cli.py 5007 5002
+python ./cli.py 5008 5003
 
 
 
@@ -40,6 +40,6 @@ UPDATE:so the prm works, but the CLI has some syntax error. I read on piazza tha
 going to turn it now because I heard you just go over code, and I'm fairly sure our methods correct.
 
 UPDATE2: Never mind it all seems to compile and run. However I'm running on my home computer so I'm not sure if 
-it will run entirely correct...
+it will run entirely correct on csil machines...
 
 
