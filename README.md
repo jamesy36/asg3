@@ -35,7 +35,8 @@ Example:
 ./cli 5008 5003
 
 
-NOTE:it's not working due to errors, I've been debuggin all day but then I saw the piazza that said 
-you'd just check through code if it doesn't work and I'd rather just submit what we have now. 
+
+UPDATE:so the prm works, but the CLI has some syntax error. I read on piazza that it's better to turn it in early, so I'm
+going to turn it now because I heard you just go over code, and I'm fairly sure our methods correct.
 
 
