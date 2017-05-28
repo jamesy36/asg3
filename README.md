@@ -39,4 +39,7 @@ Example:
 UPDATE:so the prm works, but the CLI has some syntax error. I read on piazza that it's better to turn it in early, so I'm
 going to turn it now because I heard you just go over code, and I'm fairly sure our methods correct.
 
+UPDATE2: Never mind it all seems to compile and run. However I'm running on my home computer so I'm not sure if 
+it will run entirely correct...
+
 
