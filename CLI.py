@@ -28,11 +28,10 @@ class cli:
         sock = socket(AF_INET, SOCK_STREAM)
         address = (ip, int(prmPort))
         time.sleep(5)
-
-		print(" Init' the CLI at the address: ", address)
+        print(" Init' the CLI at the address: ", address)
                 
-         #set up sockets 
-		sock.connect(address)
+        #set up sockets 
+        sock.connect(address)
         outgoingTCP.append(sock)
         print("CONNECTED")
 
@@ -101,29 +100,12 @@ class cli:
             else:
                 print("no matching command found.")
                 print("Valid commands: print, stop, resume, merge, total, replicate")
+                continue
                                        
             if input_string != '':
-                        self.wait_response()
-                    
-	def wait_response(self):
-		#we need to waitfor a single process to finish before we do another
-		while True:  
-            try:
-                data_recv = self.socket_prm_in.recv(1024).decode()
-                print("Data received: ", data_recv)
-
-                data_proc = data_recv.strip().split('*')
-                if len(data_recv) >= 1:
-                    if data_proc[0] == 'ack':
-                        print('msg successfully passed and exed')
-                        return
-                    if data_proc[0] == 'nack':
-                        print('msg NOT successfully passed and exed--investigate further!')
-                        return
-            except socket.error:
-                print("Socket error experienced--investigate further :(")
                 continue
-            time.sleep(1)
+                        #self.wait_response()
 
 
-		
+CLI = cli()
+CLI.setup
