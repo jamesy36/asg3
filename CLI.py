@@ -16,7 +16,7 @@ class cli:
     sock = socket(AF_INET, SOCK_STREAM)
 
 
-	def _init_(self, id):
+    def _init_(self, id):
 		#needs to be able to determine how many sockets there will be
 		#needs to keep track of prm sockets
 		self.id = id

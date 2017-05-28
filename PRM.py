@@ -15,7 +15,7 @@ stop = False #if a process gets stopped it'll be true
 
 class PRM(object):
 
-	prm = PRM()
+	
 
 	def _init_(self, index, id ):
 		self.accepts = dict()
@@ -58,10 +58,9 @@ class PRM(object):
 		for data in log:
 			print(data[0])
 
-	def merge(files)
-	#merge cmd implemented
+	def merge(input_string):
 		words = dict()
-		for filename in files:
+		for filename in input_string:
 			with open(filename) as f:
 				for line in f.readlines():
 					currentLine = line.split()
@@ -73,7 +72,6 @@ class PRM(object):
 						words[word] = newCount
 					else:
 						words[word] = count
-
 		print(words)
 		return words
 
@@ -205,11 +203,12 @@ class PRM(object):
 					prm.reinit
 					sys.stdout.write("Printing prm: ")
 					print(prm)
-				else
+				else:
 					continue
 		return
 
 
+prm = PRM()
 
 #Create the server
 server = socket(AF_INET, SOCK_STREAM)
@@ -256,12 +255,12 @@ princt(addr)
 
 #Opening a connection with the CLI
 
-cliPort = int(siteInfo[int(siteInfo) - 1][1]) + 3 
+cliPort = int(siteInfo[int(siteInfo) - 1][1]) + 5
 s = socket(AF_INET, SOCK_STREAM)
 addr = ("127.0.0.1", cliPort)
 time.sleep(5)
 s.connect(addr)
-outoingTCP["cli"] = s
+outgoingTCP["cli"] = s
 
 print("Ready for commands")
 while(True):
