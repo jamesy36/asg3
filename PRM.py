@@ -1,5 +1,5 @@
 import sys
-import socket 
+from socket import * 
 import time
 import select
 
@@ -212,7 +212,7 @@ prm = PRM()
 
 #Create the server
 server = socket(AF_INET, SOCK_STREAM)
-server.setsockopt(SOL_SOCKET, SO_RESUSEADDR, 1)
+server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 
 siteNum = sys.argv[1]
 setup = sys.argv[2]
@@ -220,7 +220,7 @@ print("Esablishing connection!")
 with open(setup) as f:
 	numSites = f.readline().strip() 
 	for i in range(int(numSites)):
-		line = f.readline().stirp().split()
+		line = f.readline().strip().split()
 		siteInfo.append([data for data in line])
 
 	server.bind(('', int(siteInfo[int(siteNum) -1][1])))
