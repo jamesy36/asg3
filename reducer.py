@@ -40,7 +40,7 @@ def reducer(groupMed, file):
 ip = "127.0.0.1"
 port = sys.argv[1]
 cli = sys.argv[2]
-uniqueid = sys.argv[3]
+
 
 cliServer = socket(AF_INET, SOCK_STREAM)
 cliServer.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
