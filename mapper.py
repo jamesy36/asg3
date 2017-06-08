@@ -9,8 +9,8 @@ incomingTCP = []
 outgoingTCP = []
 
 def mapper(file, offset, size):
-	texts = dict()
-	#create dictionary to hold texts from file
+	words = dict()
+	#create dictionary to hold words from file
 	temp = ""
 	#create a temp empty string to hold what's being read into it
 	f = open(fname, "r")
@@ -25,18 +25,18 @@ def mapper(file, offset, size):
 
 	#the loop basically will add all words to dictionary while keeping track of how many
 	for keywords in splitText:
-		if(keywords in texts.keys()):
-			oldCounter = texts.get(keywords)
+		if(keywords in words.keys()):
+			oldCounter = words.get(keywords)
 			newCounter = int(oldCounter) + 1
-			texts[keywords] = newCounter
+			words[keywords] = newCounter
 		else:
-			texts[keywords] = 1
+			words[keywords] = 1
 
 	result = open(file, + "_I_" + uniqueid, "w")
 	for i in word.keys():
 		result.write(str(i))
 		result.write(" ")
-		result.write(str(texts.get(i)))
+		result.write(str(words.get(i)))
 		result.write("\n")
 	result.close()
 	return
