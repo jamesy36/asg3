@@ -143,8 +143,8 @@ class PRM(object):
 					stop = False
 				elif(process[0].find("prepare") != -1):
 					print("prepare")
-					ballot = int(dataList[1])
-					siteNum = dataList[2] 
+					ballot = int(process[1])
+					siteNum = process[2] 
 					#id for the siteNum
 					if(prm.ballotNum[0] < ballot or (prm.ballotNum[0] == ballot and prm.ballotNum[1] < int(siteNum))):
 						prm.ballotNum[0] = ballot 
