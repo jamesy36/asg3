@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from socket import *
 import time
 import sys
