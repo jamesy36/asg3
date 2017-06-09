@@ -243,7 +243,7 @@ with open(setup) as f:
 			outgoingTCP[nums[1]] = s
 		if(nums[1] == siteNum):
 			connect = server.accept()
-			addr = server.accept()
+			#addr = server.accept()
 			incomingTCP[nums[0]] = connect
 
 #Receiving connection from the CLI
