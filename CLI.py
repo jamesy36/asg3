@@ -20,12 +20,12 @@ class cli:
         ip = "127.0.0.1"
         nodePort = sys.argv[1]
         prmPort = sys.argv[2]
-        #mapPort1 = sys.argv[3]
-        #mapPort2 = sys.argv[4]
-        #reducerPort = sys.argv[5]
+        mapPort1 = sys.argv[3]
+        mapPort2 = sys.argv[4]
+        reducerPort = sys.argv[5]
 
-        incomingTCP = []
-        outgoingTCP = []
+        incomingTCP = dict()
+        outgoingTCP = dict()
         sock = socket(AF_INET, SOCK_STREAM)
         address = (ip, int(prmPort))
         time.sleep(5)
@@ -47,7 +47,41 @@ class cli:
         incomingTCP.append(connection)
         print("Connection Successful")
 		#move onto command execution
+        self.mapperConnect(1, mapPort1, server)
+        self.mapperConnect(2, mapPort2, server)
+        self.reducerConnect(reducerPort,server)
         self.commands()
+
+    def mapperConnect(self, id, port, server):
+        #connect to mapper
+        mapSock = socket(AF_INET, SOCK_STREAM)
+        addr = (ip, int(port))
+        print("connecting to mapper " + id)
+        mapSock.connect(addr)
+        outgoingTCP["mapper" + id] = mapSock
+
+        #receive connection from mapper
+        print("cli receiving connection from mapper1")
+        connect = server.accept()
+        addr = server.accept()
+        incomingTCP["mapper" + id] = connect
+        print("cli has connect with mapper" + id )
+
+    def reducerConnect(self, port, server):
+        reducerSock = socket(AF_INET, SOCK_STREAM)
+        addr = (ip, int(port))
+        print("connectig to reducer")
+        reducerSock.connect(addr)
+        outgoingTCP["reducer"] = reducerSock
+        print("cli connected to reducer")
+
+        #receive connection from reducer
+        print("cli receiving connection from reducer")
+        connection = server.accept()
+        addr = server.accept()
+        incomingTCP["reducer"] = connection
+        print("cli has received connection from reducer")
+
 
 
 	def commands(self):
@@ -59,6 +93,16 @@ class cli:
                     #set up blank message
                     # msg = ''
                     #character "*" used as delimiter for future message processing
+            if(input_string[0] == "map"):
+                if(len(input_string) != 4):
+                    print("Invalid number of args, need 3 args")
+                    continue
+                file = input_string[1]
+                offset = input_string[2]
+                size = input_string[3]
+                message = "map" + file + " " + offset + " " + size
+
+
             if input_string[0] == 'print':
                 if(len(input_string) != 1):
                     print("Print")
