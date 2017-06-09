@@ -91,7 +91,7 @@ class PRM(object):
 		siteNum = 0
 		highest = [0,0]
 		for ack in logs:
-			if(logs[0][0] > ballotNum or (logs[0][0] == ballotNum and log[0][1] > siteNum)):
+			if(logs[0][0] > ballotNum or (logs[0][0] == ballotNum and logs[0][1] > siteNum)):
 				ballotNum = logs[0][1]
 				siteNum = logs[0][1]
 				highest = [ballotNum, siteNum]
@@ -203,7 +203,7 @@ class PRM(object):
 					prm.append(acceptVal)
 					prm.reinit
 					sys.stdout.write("Printing prm: ")
-					print(prm)
+					print(log)
 				else:
 					continue
 		return
@@ -239,12 +239,15 @@ with open(setup) as f:
 				s.connect(addr)
 				print("Connected to ", nums[1])
 			except error:
+				print("failed")
 				time.sleep(5)
 			outgoingTCP[nums[1]] = s
 		if(nums[1] == siteNum):
 			connect = server.accept()
 			addr = server.accept()
+			print("connected with", (nums[0]))
 			incomingTCP[nums[0]] = connect
+			print(incomingTCP)
 
 #Receiving connection from the CLI
 

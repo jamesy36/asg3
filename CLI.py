@@ -101,6 +101,7 @@ class cli:
                 offset = input_string[2]
                 size = input_string[3]
                 message = "map" + file + " " + offset + " " + size
+                
 
 
             if input_string[0] == 'print':
