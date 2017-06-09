@@ -190,7 +190,7 @@ class PRM(object):
 						for c in outgoingTCP.keys():
 							if(c != "cli"):
 								sock = outgoingTCP.get(c)
-								sock.snedall(prepSend.encode())
+								sock.sendall(prepSend.encode())
 					if(prm.acceptNum[bal] >= 2 and prm.leader):
 						prm.append([prm.acceptVal[0], prm.acceptVal[1]])
 						prepSend = "decide" + str(prm.acceptVal[0]) + " " + str(prm.acceptVal[1]) + "*"
