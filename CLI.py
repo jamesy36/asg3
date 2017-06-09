@@ -4,52 +4,56 @@ import time
 import sys
 
 class cli:
-   
 
-    def _init_(self, id):
+    def __init__(self):
 	   #needs to be able to determine how many sockets there will be
 	   #needs to keep track of prm sockets
-	   self.id = id
 	   self.socket_to_map = None
 	   self.socket_to_reduce = None
 	   self.socket_prm_in = None #incoming from PRM
 	   self.socket_prm_out = None #outgoing to PRM
+	   print("CLI init'd")
 
     def setup(self):
+        print("setup path taken")
 	   #setup the cli
         ip = "127.0.0.1"
         nodePort = sys.argv[1]
         prmPort = sys.argv[2]
-        mapPort1 = sys.argv[3]
-        mapPort2 = sys.argv[4]
-        reducerPort = sys.argv[5]
+        #mapPort1 = sys.argv[3]
+        #mapPort2 = sys.argv[4]
+        #reducerPort = sys.argv[5]
 
-        incomingTCP = dict()
-        outgoingTCP = dict()
-        sock = socket(AF_INET, SOCK_STREAM)
+        #incomingTCP = dict()
+        #outgoingTCP = dict()
+        prm_out_sock = socket(AF_INET, SOCK_STREAM)
         address = (ip, int(prmPort))
         time.sleep(5)
         print(" Init' the CLI at the address: ", address)
                 
         #set up sockets 
-        sock.connect(address)
-        outgoingTCP.append(sock)
+        try:
+            prm_out_sock.connect(address)
+        except error:
+            time.sleep(5)
+        self.socket_prm_out = prm_out_sock
+        #outgoingTCP.append(sock)
         print("CONNECTED")
 
         #Start server for PRM
-        server = socket(AF_INET, SOCK_STREAM)
-        server.setsockopt(SOL_SOCKET, SO_RESUSEADDR, 1)
-        server.bind(('', int(nodePort)))
-        server.listen(10)
-        print("Receiving connection from RPMS")
-        connection = server.accept()
-        address = server.accept()
-        incomingTCP.append(connection)
+        prm_in_sock = socket(AF_INET, SOCK_STREAM)
+        #prm_in_sock.setsockopt(SOL_SOCKET, SO_RESUSEADDR, 1)
+        prm_in_sock.bind(('', int(nodePort)))
+        prm_in_sock.listen(10)
+        print("Receiving connection from PRMs")
+        address, connection = prm_in_sock.accept()
+        self.socket_prm_in = connection
+        #incomingTCP.append(connection)
         print("Connection Successful")
 		#move onto command execution
-        self.mapperConnect(1, mapPort1, server)
-        self.mapperConnect(2, mapPort2, server)
-        self.reducerConnect(reducerPort,server)
+        #self.mapperConnect(1, mapPort1, server)
+        #self.mapperConnect(2, mapPort2, server)
+        #self.reducerConnect(reducerPort,server)
         self.commands()
 
     def mapperConnect(self, id, port, server):
@@ -150,7 +154,14 @@ class cli:
             if input_string != '':
                 continue
                         #self.wait_response()
+    #def main():
+            #test = cli()
+            #test.setup()
+            #print("done")            
 
+    #if __name__== "__main__":
+        #main()
+test = cli()
+test.setup()
+print("done")
 
-CLI = cli()
-CLI.setup

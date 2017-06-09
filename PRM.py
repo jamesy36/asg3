@@ -28,6 +28,7 @@ class PRM(object):
 		self.leader = False #starts at false 
 		self.acceptVal = None #null until a value has been accepted 
 		self.id = id
+		self.p = 0
 
 	def reinit():
 		self.accepts.clear()
@@ -232,6 +233,7 @@ with open(setup) as f:
 		if(nums[0] == siteNum):
 			ip = siteInfo[int(nums[1]) -1][0]
 			port = siteInfo[int(nums[1])-1][1]
+			prm.p = int(port)
 			s = socket(AF_INET, SOCK_STREAM)
 			addr = (ip, int(port))
 			time.sleep(10)
@@ -242,39 +244,24 @@ with open(setup) as f:
 				time.sleep(5)
 			outgoingTCP[nums[1]] = s
 		if(nums[1] == siteNum):
-			connect = server.accept()
+			addr, connect = server.accept()
 			#addr = server.accept()
-			incomingTCP[nums[0]] = connect
+			#incomingTCP[nums[0]] = connect
 
 #Receiving connection from the CLI
 
-connect = server.accept()
-addr = server.accept()
+addr, connect = server.accept()
 incomingTCP["cli"] = connect
 print(connect)
-princt(addr)
+print(addr)
 
 #Opening a connection with the CLI
-
-cliPort = int(siteInfo[int(siteInfo) - 1][1]) + 5
 s = socket(AF_INET, SOCK_STREAM)
-addr = ("127.0.0.1", cliPort)
+addr = ("127.0.0.1", prm.p)
 time.sleep(5)
 s.connect(addr)
 outgoingTCP["cli"] = s
 
 print("Ready for commands")
 while(True):
-	receive(incomingTCP)
-
-
-
-
-
-
-
-
-
-
-
-
+	prm.receive(connect)
