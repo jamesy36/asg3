@@ -3,7 +3,7 @@ from socket import *
 import time
 import sys
 import os
-
+import select
 class cli:
 
     initPort = 5001
@@ -63,6 +63,7 @@ class cli:
 
     def mapFile(self, file):
         #I realized that the mapper function needed a helper to find offset, and params
+        #UPDATE: I realized that its a better a helper for the whole cmd
         fileSize = self.getSize(file)
         #integer division 
         if(fileSize%2 == 0):
@@ -75,9 +76,11 @@ class cli:
             if c == " ":
                 break
             offset += 1
-        msg1 = file + " " + "0" + " " + str(offset) + "and" 
-        msg2 = file + " " + str(offset) + " " + str(file_size//2) + "and"
-        self.map
+        msg1 = file + " " + "0" + " " + str(offset) + "*"
+        msg2 = file + " " + str(offset) + " " + str(file_size//2) + "*"
+        mapSock1.sendall(msg1.encode())
+        mapSock2.sendall(msg2.encode())
+        receive(incomingTCP)
 
     def fileTranslation(file):
         result = ""
@@ -119,6 +122,18 @@ class cli:
         incomingTCP["reducer"] = connection
         print("cli has received connection from reducer")
 
+    def receive(self, channels):
+        received = False
+        while(received != True):
+            for c in channels.keys():
+                sock = channels.get(c)
+                ready = select.select([sock], [], [], 1)
+                if(ready[0]):
+                    data = sock.recv(1024).decode()
+                    print(data)
+                    received = True
+        return
+
 
 
     def commands(self):
@@ -137,51 +152,73 @@ class cli:
                     print("Invalid number of args, need 3 args")
                     continue
                 file = input_string[1]
-                offset = mapOffset(file)
-                size = getSize(file)
-                message = "map" + file + " " + offset + " " + size
-                self.mapsockets[0].sendall(msg1.encode())
-                self.mapsockets[1].sendall(msg2.encode())
-
-            if input_string[0] == 'print':
+                self.mapFile(file)
+            
+            elif(input_string[0] == "reduce"):
+                if(len(input_string) < 2):
+                    print("Invalid number of args, need more than 2 inputs")
+                    continue
+                files = "reduce"
+                for i in range(1, len(input_string)):
+                    files += input_string[i] + " "
+                files += "*"
+                reducerSock.sendall(files.encode())
+                receive(incomingTCP)
+            
+            elif input_string[0] == 'print':
                     if(len(input_string) != 1):
                         print("Print")
                         continue
-                    sock.sendall("Print*".encode())
+                    prmSock.sendall("print*".encode())
+                    receive(incomingTCP)
+            
             elif input_string[0] == 'stop':
                 if(len(input_string) != 1):
                     print("stop")
                     continue
-                sock.sendall("stop*".encode())
+                prmSock.sendall("stop*".encode())
+                receive(incomingTCP)
+            
             elif input_string[0] == 'resume':
                 if(len(input_string) != 1):
                     print("resume")
                     continue
-                sock.sendall("resume*".encode())
+                prmSock.sendall("resume*".encode())
+                receive(incomingTCP)
+            
             elif input_string[0] == 'merge':
                 #if correct num of args
                 if len(input_string) == 3:
                     f1 = input_string[1]
                     f2 = input_string[2]
                     data = "merge" + f1 + " " + f2 + "*"
-                    sock.sendall(data.encode())
+                    prmSock.sendall(data.encode())
                 else:
                     print("Invalid number of args, need 3 args.")
+            
             elif input_string[0] == 'total':
-                #if correct num of args
-                if len(input_string) == 3:
-                    msg = 'total|'+input_string[1]+'|'+input_string[2]+'*'
-                else:
+                #if improper number of args
+                if len(input_string) < 2:
                     print("Invalid number of args, need 3 args.")
                     continue
+                else:
+                    data = "total"
+                    for i in range(1, len(input_string)):
+                        data += input_string[i] + " "
+                    data += "*"
+                    prmSock.sendall(data.encode())
+                    receive(incomingTCP)  
+           
             elif input_string[0] == 'replicate':
                 #if correct num of args
                 if len(input_string) == 2:
                     f = input_string[1] #filename
                     data = "replicate" + input_string[1] + "*"
-                    sock.sendall(data.encode())
+                    prmSock.sendall(data.encode())
+                    receive(incomingTCP)
                 else:
                     print("Invalid number of args, need 2 args.")
+            
             else:
                 print("no matching command found.")
                 print("Valid commands: print, stop, resume, merge, total, replicate")
