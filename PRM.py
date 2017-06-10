@@ -271,7 +271,7 @@ with open(setup) as f:
 		siteInfo.append([data for data in line])
 
 	#server.bind(('', int(siteInfo[int(siteNum) -1][1])))
-	server.bind(("127.0.0.1", port))
+	server.bind(("0.0.0.0", port))
 	#use the 2nd one for euca
 	server.listen(10)
 
