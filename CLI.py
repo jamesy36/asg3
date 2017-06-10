@@ -138,10 +138,12 @@ class cli:
 
     def commands(self):
     #we need to implement the replicate, stop, resume, total, print merge 
-        print("Enter Command:")
-        for line in sys.stdin:
-            print(line)
-            input_string = line.split()
+        cont = True
+        while cont:
+            cmd = raw_input("Enter Command: ")
+            print(cmd)
+            input_string = cmd.split()
+            print(input_string)
                     
                     #set up blank message
                     # msg = ''
@@ -218,6 +220,9 @@ class cli:
                     receive(incomingTCP)
                 else:
                     print("Invalid number of args, need 2 args.")
+
+            elif input_string[0] == 'exit':
+                cont = False
             
             else:
                 print("no matching command found.")

@@ -127,7 +127,7 @@ class self(object):
 						#in case we're rerunning it
 						print("resume")
 						stop = False
-						for c in outgoingTCP.keys();
+						for c in outgoingTCP.keys():
 							if(c == "cli"):
 								sock = outgoingTCP.get(c)
 								sock.sendall("process resuming".encode())
