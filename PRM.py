@@ -285,11 +285,14 @@ with open(setup) as f:
 			addr = (ip, int(port))
 			time.sleep(10)
 			print(addr)
-			try:
-				s.connect(addr)
+			run = True
+                        while run:
+			    try:
+		            	s.connect(addr)
 				print("Connected to ", nums[1])
-			except error:
-				time.sleep(5)
+				run = False
+			    except error:
+			    	time.sleep(5)
 			outgoingTCP[nums[1]] = s
 		if(nums[1] == siteNum):
 			connect, addr = server.accept()
