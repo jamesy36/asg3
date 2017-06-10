@@ -28,6 +28,7 @@ class PRM(object):
 		self.leader = False #starts at false 
 		self.acceptVal = None #null until a value has been accepted 
 		self.id = id
+		self.p = 0
 
 	def reinit():
 		self.accepts.clear()
@@ -91,7 +92,7 @@ class PRM(object):
 		siteNum = 0
 		highest = [0,0]
 		for ack in logs:
-			if(logs[0][0] > ballotNum or (logs[0][0] == ballotNum and logs[0][1] > siteNum)):
+			if(logs[0][0] > ballotNum or (logs[0][0] == ballotNum and log[0][1] > siteNum)):
 				ballotNum = logs[0][1]
 				siteNum = logs[0][1]
 				highest = [ballotNum, siteNum]
@@ -99,11 +100,11 @@ class PRM(object):
 		return highest
 
 
-	def receive(channels):
+        def receive(self, channels):
 		global stop
 
 		for i in channels.keys():
-			sock = channels.get(i)
+			sock = channels.get(i)	
 			ready = select.select([sock], [], [], 1)
 			if(ready[0]):
 				data = sock.recv(1024).decode()
@@ -190,7 +191,7 @@ class PRM(object):
 						for c in outgoingTCP.keys():
 							if(c != "cli"):
 								sock = outgoingTCP.get(c)
-								sock.snedall(prepSend.encode())
+								sock.sendall(prepSend.encode())
 					if(prm.acceptNum[bal] >= 2 and prm.leader):
 						prm.append([prm.acceptVal[0], prm.acceptVal[1]])
 						prepSend = "decide" + str(prm.acceptVal[0]) + " " + str(prm.acceptVal[1]) + "*"
@@ -203,7 +204,7 @@ class PRM(object):
 					prm.append(acceptVal)
 					prm.reinit
 					sys.stdout.write("Printing prm: ")
-					print(log)
+					print(prm)
 				else:
 					continue
 		return
@@ -232,6 +233,7 @@ with open(setup) as f:
 		if(nums[0] == siteNum):
 			ip = siteInfo[int(nums[1]) -1][0]
 			port = siteInfo[int(nums[1])-1][1]
+			prm.p = int(port)
 			s = socket(AF_INET, SOCK_STREAM)
 			addr = (ip, int(port))
 			time.sleep(10)
@@ -239,45 +241,38 @@ with open(setup) as f:
 				s.connect(addr)
 				print("Connected to ", nums[1])
 			except error:
-				print("failed")
 				time.sleep(5)
 			outgoingTCP[nums[1]] = s
 		if(nums[1] == siteNum):
-			connect = server.accept()
-			addr = server.accept()
-			print("connected with", (nums[0]))
+			connect, addr = server.accept()
+			#addr = server.accept()
 			incomingTCP[nums[0]] = connect
-			print(incomingTCP)
 
 #Receiving connection from the CLI
 
-connect = server.accept()
-addr = server.accept()
-incomingTCP["cli"] = connect
+connect, addr = server.accept()
+incomingTCP["cli"] = connect 
 print(connect)
-princt(addr)
+print(addr)
+print(incomingTCP)
 
 #Opening a connection with the CLI
-
-cliPort = int(siteInfo[int(siteInfo) - 1][1]) + 5
 s = socket(AF_INET, SOCK_STREAM)
-addr = ("127.0.0.1", cliPort)
-time.sleep(5)
-s.connect(addr)
+cli_port = int(prm.p) + 5
+address = ("127.0.0.1", cli_port)
+time.sleep(10)
+keep_going = True
+while keep_going:
+    try:
+        s.connect(address)
+        keep_going = False
+    except error:
+        time.sleep(5)
+        keep_going = True
 outgoingTCP["cli"] = s
+print(outgoingTCP)
 
 print("Ready for commands")
 while(True):
-	receive(incomingTCP)
-
-
-
-
-
-
-
-
-
-
-
-
+    prm.receive(incomingTCP)
+    #time.sleep(1)

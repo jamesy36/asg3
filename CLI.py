@@ -2,75 +2,112 @@
 from socket import *
 import time
 import sys
+import os
 
 class cli:
-   
 
-    def _init_(self, id):
-	   #needs to be able to determine how many sockets there will be
-	   #needs to keep track of prm sockets
-	   self.id = id
-	   self.socket_to_map = None
-	   self.socket_to_reduce = None
-	   self.socket_prm_in = None #incoming from PRM
-	   self.socket_prm_out = None #outgoing to PRM
+    initPort = 5001
+    mapPort1 = 5002
+    mapPort2 = 5003
+    reducerPort = 5004
+    prmPort = 5005
+
+    incomingTCP = dict()
+    outgoingTCP = dict()
+
+    def __init__(self):
+       #needs to be able to determine how many sockets there will be
+       #needs to keep track of prm sockets
+       self.socket_to_map = None
+       self.socket_to_reduce = None
+       self.prmSock = None 
+       self.mapSock = None
+       self.reducerSock = None
+       self.mapsockets = []
+        #since we have multiple mappers, and i want it to be dynamic i'm trying this
+       print("CLI init'd")
+
+
 
     def setup(self):
-	   #setup the cli
-        ip = "127.0.0.1"
-        nodePort = sys.argv[1]
-        prmPort = sys.argv[2]
-        mapPort1 = sys.argv[3]
-        mapPort2 = sys.argv[4]
-        reducerPort = sys.argv[5]
 
-        incomingTCP = dict()
-        outgoingTCP = dict()
-        sock = socket(AF_INET, SOCK_STREAM)
-        address = (ip, int(prmPort))
-        time.sleep(5)
-        print(" Init' the CLI at the address: ", address)
-                
-        #set up sockets 
-        sock.connect(address)
-        outgoingTCP.append(sock)
-        print("CONNECTED")
-
-        #Start server for PRM
-        server = socket(AF_INET, SOCK_STREAM)
-        server.setsockopt(SOL_SOCKET, SO_RESUSEADDR, 1)
-        server.bind(('', int(nodePort)))
+        #setting up connections
+        server = socket(AF_INET)
+        server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        server.bind(("0.0.0.0", int (initPort)))
         server.listen(10)
-        print("Receiving connection from RPMS")
+        print("cli receiving connection from prm")
         connection = server.accept()
-        address = server.accept()
-        incomingTCP.append(connection)
-        print("Connection Successful")
-		#move onto command execution
-        self.mapperConnect(1, mapPort1, server)
-        self.mapperConnect(2, mapPort2, server)
-        self.reducerConnect(reducerPort,server)
-        self.commands()
+        #address = server.accept()
+        incomingTCP["prm"] = connection
+        print("cli received connection from prm")
 
-    def mapperConnect(self, id, port, server):
+        
+  
+    def prmConnect(self):
+        self.ip = "127.0.0.1"
+        prmSock = socket(AF_INET, SOCK_STREAM)
+        addr = (self.ip, int(prmPort))
+        time.sleep(5)
+        print("cli connecting to prm")
+        prmSock.connect(addr)
+        outgoingTCP["prm"] = prmSock
+        print("cli connected to prm")
+
+
+    def getSize(self, file):
+        #this helper gets you the file size
+        size = os.stat(file)
+        return size.st_size
+
+
+    def mapFile(self, file):
+        #I realized that the mapper function needed a helper to find offset, and params
+        fileSize = self.getSize(file)
+        #integer division 
+        if(fileSize%2 == 0):
+            offset = fileSize//2
+        else:
+            offset = fileSize - (offset = fileSize//2)
+        file = open(file)
+        while(True):
+            c = file.read(1)
+            if c == " ":
+                break
+            offset += 1
+        msg1 = file + " " + "0" + " " + str(offset) + "and" 
+        msg2 = file + " " + str(offset) + " " + str(file_size//2) + "and"
+        self.map
+
+    def fileTranslation(file):
+        result = ""
+        with open(file) as f:
+            for line in f.readlines()
+            current = line.split()
+            result += current[0] + " " + current[1] + " "
+        return result
+
+
+
+    def mapperConnect(self, id, port):
         #connect to mapper
-        mapSock = socket(AF_INET, SOCK_STREAM)
-        addr = (ip, int(port))
+        (mapSock+id) = socket(AF_INET, SOCK_STREAM)
+        addr = (self.ip, int(port))
         print("connecting to mapper " + id)
-        mapSock.connect(addr)
+        (mapSock+id).connect(addr)
         outgoingTCP["mapper" + id] = mapSock
 
         #receive connection from mapper
         print("cli receiving connection from mapper1")
         connect = server.accept()
-        addr = server.accept()
+        #addr = server.accept()
         incomingTCP["mapper" + id] = connect
         print("cli has connect with mapper" + id )
 
-    def reducerConnect(self, port, server):
+    def reducerConnect(self, port):
         reducerSock = socket(AF_INET, SOCK_STREAM)
-        addr = (ip, int(port))
-        print("connectig to reducer")
+        addr = (self.ip, int(port))
+        print("connecting to reducer")
         reducerSock.connect(addr)
         outgoingTCP["reducer"] = reducerSock
         print("cli connected to reducer")
@@ -84,30 +121,32 @@ class cli:
 
 
 
-	def commands(self):
-		#we need to implement the replicate, stop, resume, total, print merge 
-         for line in sys.stdin:
+    def commands(self):
+    #we need to implement the replicate, stop, resume, total, print merge 
+        print("Enter Command:")
+        for line in sys.stdin:
             print(line)
             input_string = line.split()
                     
                     #set up blank message
                     # msg = ''
                     #character "*" used as delimiter for future message processing
+           
             if(input_string[0] == "map"):
                 if(len(input_string) != 4):
                     print("Invalid number of args, need 3 args")
                     continue
                 file = input_string[1]
-                offset = input_string[2]
-                size = input_string[3]
+                offset = mapOffset(file)
+                size = getSize(file)
                 message = "map" + file + " " + offset + " " + size
-                
-
+                self.mapsockets[0].sendall(msg1.encode())
+                self.mapsockets[1].sendall(msg2.encode())
 
             if input_string[0] == 'print':
-                if(len(input_string) != 1):
-                    print("Print")
-                    continue
+                    if(len(input_string) != 1):
+                        print("Print")
+                        continue
                     sock.sendall("Print*".encode())
             elif input_string[0] == 'stop':
                 if(len(input_string) != 1):
@@ -147,11 +186,15 @@ class cli:
                 print("no matching command found.")
                 print("Valid commands: print, stop, resume, merge, total, replicate")
                 continue
-                                       
+                               
             if input_string != '':
                 continue
-                        #self.wait_response()
 
-
-CLI = cli()
-CLI.setup
+test = cli()
+test.prmConnect()
+test.mapperConnect(self, 1, mapPort1)
+test.mapperConnect(self, 2, mapPort2)
+test.reducerConnect(self, reducerPort)
+test.setup()
+test.commands()
+print("done")
