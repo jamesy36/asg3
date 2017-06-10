@@ -92,24 +92,24 @@ class cli:
 
 
 
-    def mapperConnect(self, id, port):
+    def mapperConnect(self, ID, port):
         #connect to mapper
-        (mapSock+id) = socket(AF_INET, SOCK_STREAM)
-        addr = (self.ip, int(port))
-        print("connecting to mapper " + id)
-        (mapSock+id).connect(addr)
-        outgoingTCP["mapper" + id] = mapSock
+        (mapSock+ID) = socket(AF_INET, SOCK_STREAM)
+        addr = (self.ip, int(mapPort+ID))
+        print("connecting to mapper " + ID)
+        (mapSock+ID).connect(addr)
+        outgoingTCP["mapper" + ID] = mapSock
 
         #receive connection from mapper
         print("cli receiving connection from mapper1")
         connect = server.accept()
         #addr = server.accept()
-        incomingTCP["mapper" + id] = connect
-        print("cli has connect with mapper" + id )
+        incomingTCP["mapper" + ID] = connect
+        print("cli has connect with mapper" + ID )
 
     def reducerConnect(self, port):
         reducerSock = socket(AF_INET, SOCK_STREAM)
-        addr = (self.ip, int(port))
+        addr = (self.ip, int(reducerPort))
         print("connecting to reducer")
         reducerSock.connect(addr)
         outgoingTCP["reducer"] = reducerSock
@@ -149,14 +149,14 @@ class cli:
            
             if(input_string[0] == "map"):
                 if(len(input_string) != 4):
-                    print("Invalid number of args, need 3 args")
+                    print("invalid number of args, need 3 args")
                     continue
                 file = input_string[1]
                 self.mapFile(file)
             
             elif(input_string[0] == "reduce"):
                 if(len(input_string) < 2):
-                    print("Invalid number of args, need more than 2 inputs")
+                    print("invalid number of args, need more than 2 inputs")
                     continue
                 files = "reduce"
                 for i in range(1, len(input_string)):
@@ -194,12 +194,12 @@ class cli:
                     data = "merge" + f1 + " " + f2 + "*"
                     prmSock.sendall(data.encode())
                 else:
-                    print("Invalid number of args, need 3 args.")
+                    print("invalid number of args, need 3 args.")
             
             elif input_string[0] == 'total':
                 #if improper number of args
                 if len(input_string) < 2:
-                    print("Invalid number of args, need 3 args.")
+                    print("invalid number of args, need 3 args.")
                     continue
                 else:
                     data = "total"
@@ -217,11 +217,11 @@ class cli:
                     prmSock.sendall(data.encode())
                     receive(incomingTCP)
                 else:
-                    print("Invalid number of args, need 2 args.")
+                    print("invalid number of args, need 2 args.")
             
             else:
                 print("no matching command found.")
-                print("Valid commands: print, stop, resume, merge, total, replicate")
+                print("ValID commands: print, stop, resume, merge, total, replicate")
                 continue
                                
             if input_string != '':
