@@ -309,7 +309,7 @@ print(incomingTCP)
 
 #Opening a connection with the CLI
 s = socket(AF_INET, SOCK_STREAM)
-cli_port = int(self.p) + 5
+cli_port = int(test.p) - 4 
 address = ("127.0.0.1", cli_port)
 time.sleep(10)
 keep_going = True

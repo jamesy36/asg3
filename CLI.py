@@ -4,13 +4,21 @@ import time
 import sys
 import os
 import select
+import fileinput
+
+initPort = 5001
+mapPort1 = 5002
+mapPort2 = 5003
+reducerPort = 5004
+prmPort = 5005
+
 class cli:
 
-    initPort = 5001
-    mapPort1 = 5002
-    mapPort2 = 5003
-    reducerPort = 5004
-    prmPort = 5005
+    #initPort = 5001
+    #mapPort1 = 5002
+    #mapPort2 = 5003
+    #reducerPort = 5004
+    #prmPort = 5005
 
     incomingTCP = dict()
     outgoingTCP = dict()
@@ -44,10 +52,10 @@ class cli:
 
         
   
-    def prmConnect(self):
-        self.ip = "127.0.0.1"
+    def prmConnect(self, port):
+        self.ip = "0.0.0.0"
         prmSock = socket(AF_INET, SOCK_STREAM)
-        addr = (self.ip, int(prmPort))
+        addr = (self.ip, int(port))
         time.sleep(5)
         print("cli connecting to prm")
         prmSock.connect(addr)
@@ -69,7 +77,7 @@ class cli:
         if(fileSize%2 == 0):
             offset = fileSize//2
         else:
-            offset = fileSize - (offset = fileSize//2)
+            offset = fileSize - (offset + fileSize//2)
         file = open(file)
         while(True):
             c = file.read(1)
@@ -85,27 +93,27 @@ class cli:
     def fileTranslation(file):
         result = ""
         with open(file) as f:
-            for line in f.readlines()
-            current = line.split()
-            result += current[0] + " " + current[1] + " "
+            for line in f.readlines():
+                current = line.split()
+                result += current[0] + " " + current[1] + " "
         return result
 
 
 
-    def mapperConnect(self, id, port):
+    def mapperConnect(self, ID, port):
         #connect to mapper
-        (mapSock+id) = socket(AF_INET, SOCK_STREAM)
+        s = socket(AF_INET, SOCK_STREAM)
         addr = (self.ip, int(port))
-        print("connecting to mapper " + id)
-        (mapSock+id).connect(addr)
-        outgoingTCP["mapper" + id] = mapSock
+        print("connecting to mapper " + ID)
+        s.connect(addr)
+        outgoingTCP["mapper" + ID] = s 
 
         #receive connection from mapper
-        print("cli receiving connection from mapper1")
-        connect = server.accept()
+        print("cli receiving connection from mapper " + ID)
+        addr, connect = server.accept()
         #addr = server.accept()
-        incomingTCP["mapper" + id] = connect
-        print("cli has connect with mapper" + id )
+        incomingTCP["mapper" + ID] = connect
+        print("cli has connect with mapper" + ID )
 
     def reducerConnect(self, port):
         reducerSock = socket(AF_INET, SOCK_STREAM)
@@ -233,7 +241,7 @@ class cli:
                 continue
 
 test = cli()
-test.prmConnect()
+test.prmConnect(prmPort)
 test.mapperConnect(self, 1, mapPort1)
 test.mapperConnect(self, 2, mapPort2)
 test.reducerConnect(self, reducerPort)

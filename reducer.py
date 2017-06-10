@@ -13,7 +13,7 @@ def reducer(groupMed, file):
 	words = dict()
 	for files in groupMed:
 		with open(files) as f:
-			for line in f.readlines()
+                    for line in f.readlines():
 			word = currentLine[0]
 			counter = int(currentLine[1])
 			if(word in words.keys()):
@@ -71,6 +71,6 @@ while(True):
 			#if it is the correct command, call the mapper function
 			file = input_string[1]
 			for i in range(1, len(input_string)):
-			f = input_string[i]
-			groupMed.append(f)
+			    f = input_string[i]
+			    groupMed.append(f)
 			reducer(groupMed, file)
