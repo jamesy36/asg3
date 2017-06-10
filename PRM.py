@@ -258,12 +258,17 @@ print(incomingTCP)
 
 #Opening a connection with the CLI
 s = socket(AF_INET, SOCK_STREAM)
-addr = ("127.0.0.1", prm.p)
+cli_port = int(prm.p) + 5
+address = ("127.0.0.1", cli_port)
 time.sleep(10)
-try:
-    s.connect(addr)
-except error:
-    time.sleep(5)
+keep_going = True
+while keep_going:
+    try:
+        s.connect(address)
+        keep_going = False
+    except error:
+        time.sleep(5)
+        keep_going = True
 outgoingTCP["cli"] = s
 print(outgoingTCP)
 

@@ -42,11 +42,11 @@ class cli:
 
         #Start server for PRM
         prm_in_sock = socket(AF_INET, SOCK_STREAM)
-        #prm_in_sock.setsockopt(SOL_SOCKET, SO_RESUSEADDR, 1)
+        prm_in_sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         prm_in_sock.bind(('', int(nodePort)))
         prm_in_sock.listen(10)
         print("Receiving connection from PRMs")
-        address, connection = prm_in_sock.accept()
+        connection, address = prm_in_sock.accept()
         self.socket_prm_in = connection
         #incomingTCP.append(connection)
         print("Connection Successful")
@@ -54,7 +54,7 @@ class cli:
         #self.mapperConnect(1, mapPort1, server)
         #self.mapperConnect(2, mapPort2, server)
         #self.reducerConnect(reducerPort,server)
-        self.commands()
+        #self.commands()
 
     def mapperConnect(self, id, port, server):
         #connect to mapper
@@ -88,9 +88,10 @@ class cli:
 
 
 
-	def commands(self):
-		#we need to implement the replicate, stop, resume, total, print merge 
-         for line in sys.stdin:
+    def commands(self):
+	#we need to implement the replicate, stop, resume, total, print merge 
+        print("Enter Command:")
+        for line in sys.stdin:
             print(line)
             input_string = line.split()
                     
@@ -108,9 +109,9 @@ class cli:
 
 
             if input_string[0] == 'print':
-                if(len(input_string) != 1):
-                    print("Print")
-                    continue
+                    if(len(input_string) != 1):
+                        print("Print")
+                        continue
                     sock.sendall("Print*".encode())
             elif input_string[0] == 'stop':
                 if(len(input_string) != 1):
@@ -150,18 +151,12 @@ class cli:
                 print("no matching command found.")
                 print("Valid commands: print, stop, resume, merge, total, replicate")
                 continue
-                                       
+                               
             if input_string != '':
                 continue
-                        #self.wait_response()
-    #def main():
-            #test = cli()
-            #test.setup()
-            #print("done")            
 
-    #if __name__== "__main__":
-        #main()
 test = cli()
 test.setup()
+test.commands()
 print("done")
 
