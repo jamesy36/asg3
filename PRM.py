@@ -284,6 +284,7 @@ with open(setup) as f:
 			s = socket(AF_INET, SOCK_STREAM)
 			addr = (ip, int(port))
 			time.sleep(10)
+			print(addr)
 			try:
 				s.connect(addr)
 				print("Connected to ", nums[1])
