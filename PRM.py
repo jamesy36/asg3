@@ -14,7 +14,7 @@ stop = False #if a process gets stopped it'll be true
 
 
 
-class self(object):
+class PRM(object):
 
 	
 
@@ -271,7 +271,7 @@ with open(setup) as f:
 		siteInfo.append([data for data in line])
 
 	#server.bind(('', int(siteInfo[int(siteNum) -1][1])))
-	server.bind(("0.0.0.0", port))
+	server.bind(("127.0.0.1", port))
 	#use the 2nd one for euca
 	server.listen(10)
 
@@ -280,7 +280,7 @@ with open(setup) as f:
 		if(nums[0] == siteNum):
 			ip = siteInfo[int(nums[1]) -1][0]
 			port = siteInfo[int(nums[1])-1][1]
-			self.p = int(port)
+			test.p = int(port)
 			s = socket(AF_INET, SOCK_STREAM)
 			addr = (ip, int(port))
 			time.sleep(10)
