@@ -100,11 +100,11 @@ class PRM(object):
 		return highest
 
 
-	def receive(channels):
+        def receive(self, channels):
 		global stop
 
 		for i in channels.keys():
-			sock = channels.get(i)
+			sock = channels.get(i)	
 			ready = select.select([sock], [], [], 1)
 			if(ready[0]):
 				data = sock.recv(1024).decode()
@@ -244,24 +244,30 @@ with open(setup) as f:
 				time.sleep(5)
 			outgoingTCP[nums[1]] = s
 		if(nums[1] == siteNum):
-			addr, connect = server.accept()
+			connect, addr = server.accept()
 			#addr = server.accept()
-			#incomingTCP[nums[0]] = connect
+			incomingTCP[nums[0]] = connect
 
 #Receiving connection from the CLI
 
-addr, connect = server.accept()
-incomingTCP["cli"] = connect
+connect, addr = server.accept()
+incomingTCP["cli"] = connect 
 print(connect)
 print(addr)
+print(incomingTCP)
 
 #Opening a connection with the CLI
 s = socket(AF_INET, SOCK_STREAM)
 addr = ("127.0.0.1", prm.p)
-time.sleep(5)
-s.connect(addr)
+time.sleep(10)
+try:
+    s.connect(addr)
+except error:
+    time.sleep(5)
 outgoingTCP["cli"] = s
+print(outgoingTCP)
 
 print("Ready for commands")
 while(True):
-	prm.receive(connect)
+    prm.receive(incomingTCP)
+    #time.sleep(1)
