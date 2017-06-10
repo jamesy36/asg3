@@ -4,6 +4,7 @@ import time
 import sys
 import os
 import select
+import fileinput
 class cli:
 
     initPort = 5001
@@ -139,8 +140,8 @@ class cli:
     def commands(self):
     #we need to implement the replicate, stop, resume, total, print merge 
         print("Enter Command:")
-        for line in sys.stdin:
-            print(line)
+        for line in fileinput.inptu():
+            process(line)
             input_string = line.split()
                     
                     #set up blank message
@@ -221,7 +222,7 @@ class cli:
             
             else:
                 print("no matching command found.")
-                print("ValID commands: print, stop, resume, merge, total, replicate")
+                print("Valid commands: print, stop, resume, merge, total, replicate")
                 continue
                                
             if input_string != '':
