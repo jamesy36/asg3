@@ -11,6 +11,8 @@ mapPort1 = 5002
 mapPort2 = 5003
 reducerPort = 5004
 prmPort = 5005
+incomingTCP = dict()
+outgoingTCP = dict()
 
 class cli:
 
@@ -20,8 +22,8 @@ class cli:
     #reducerPort = 5004
     #prmPort = 5005
 
-    incomingTCP = dict()
-    outgoingTCP = dict()
+    #incomingTCP = dict()
+    #outgoingTCP = dict()
 
     def __init__(self):
        #needs to be able to determine how many sockets there will be
@@ -32,24 +34,23 @@ class cli:
        self.mapSock = None
        self.reducerSock = None
        self.mapsockets = []
+       self.server = socket(AF_INET, SOCK_STREAM)
+       self.server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+       self.server.bind(("0.0.0.0", int (initPort)))
+       self.server.listen(10)
         #since we have multiple mappers, and i want it to be dynamic i'm trying this
        print("CLI init'd")
 
 
 
-    def setup(self):
+    #def setup(self):
 
         #setting up connections
-        server = socket(AF_INET)
-        server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        server.bind(("0.0.0.0", int (initPort)))
-        server.listen(10)
-        print("cli receiving connection from prm")
-        connection = server.accept()
-        #address = server.accept()
-        incomingTCP["prm"] = connection
-        print("cli received connection from prm")
-
+        #server = socket(AF_INET)
+        #server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        #server.bind(("0.0.0.0", int (initPort)))
+        #server.listen(10)
+        
         
   
     def prmConnect(self, port):
@@ -61,6 +62,11 @@ class cli:
         prmSock.connect(addr)
         outgoingTCP["prm"] = prmSock
         print("cli connected to prm")
+        print("cli receiving connection from prm")
+        connection = self.server.accept()
+        #address = server.accept()
+        incomingTCP["prm"] = connection
+        print("cli received connection from prm")
 
 
     def getSize(self, file):
@@ -104,16 +110,16 @@ class cli:
         #connect to mapper
         s = socket(AF_INET, SOCK_STREAM)
         addr = (self.ip, int(port))
-        print("connecting to mapper " + ID)
+        print("connecting to mapper " + str(ID))
         s.connect(addr)
-        outgoingTCP["mapper" + ID] = s 
+        outgoingTCP["mapper" + str(ID)] = s 
 
         #receive connection from mapper
-        print("cli receiving connection from mapper " + ID)
-        addr, connect = server.accept()
+        print("cli receiving connection from mapper " + str(ID))
+        addr, connect = self.server.accept()
         #addr = server.accept()
-        incomingTCP["mapper" + ID] = connect
-        print("cli has connect with mapper" + ID )
+        incomingTCP["mapper" + str(ID)] = connect
+        print("cli has connect with mapper" + str(ID) )
 
     def reducerConnect(self, port):
         reducerSock = socket(AF_INET, SOCK_STREAM)
@@ -125,8 +131,8 @@ class cli:
 
         #receive connection from reducer
         print("cli receiving connection from reducer")
-        connection = server.accept()
-        addr = server.accept()
+        addr, connection = self.server.accept()
+        #addr = self.server.accept()
         incomingTCP["reducer"] = connection
         print("cli has received connection from reducer")
 
@@ -242,9 +248,9 @@ class cli:
 
 test = cli()
 test.prmConnect(prmPort)
-test.mapperConnect(self, 1, mapPort1)
-test.mapperConnect(self, 2, mapPort2)
-test.reducerConnect(self, reducerPort)
-test.setup()
+test.mapperConnect(1, mapPort1)
+test.mapperConnect(2, mapPort2)
+test.reducerConnect(reducerPort)
+#test.setup()
 test.commands()
 print("done")
