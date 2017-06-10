@@ -90,10 +90,11 @@ class cli:
 
     def commands(self):
 	#we need to implement the replicate, stop, resume, total, print merge 
-        print("Enter Command:")
-        for line in sys.stdin:
+        name = raw_input("Enter Command: ")
+        input_string = "lol"
+        for line in name:
             print(line)
-            input_string = line.split()
+            #input_string = line.split()
                     
                     #set up blank message
                     # msg = ''
@@ -113,10 +114,11 @@ class cli:
                         print("Print")
                         continue
                     sock.sendall("Print*".encode())
-            elif input_string[0] == 'stop':
+            elif line == 'stop':
                 if(len(input_string) != 1):
                     print("stop")
                     continue
+                print("worked")
                 sock.sendall("stop*".encode())
             elif input_string[0] == 'resume':
                 if(len(input_string) != 1):
@@ -157,6 +159,7 @@ class cli:
 
 test = cli()
 test.setup()
-test.commands()
+while True:
+    test.commands()
 print("done")
 
