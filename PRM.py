@@ -6,13 +6,13 @@ import select
 
 incomingTCP = dict()
 outgoingTCP = dict()
-siteInfo = []
+siteInfo = [] #a list that contains ip/port for nodes 
 
 log = [] #holds all of the instances for paxos during the process
-
+backupLog  = [] #this will counter in case a node fails, it needs to brought up to date
 stop = False #if a process gets stopped it'll be true
 
-
+accepts = dict()
 
 class PRM(object):
 
@@ -23,22 +23,25 @@ class PRM(object):
 		self.ballotNum = [0,0]
 		self.ackList = [] #we need to keep track of the acks from other siteInfo
 		self.propVal = None #null until a value has been proposed
-		self.acceptNum = [0,0]
+		self.acceptBal = [0,0]
 		self.numVotes = 1
 		self.leader = False #starts at false 
 		self.acceptVal = None #null until a value has been accepted 
 		self.id = id
-		self.p = 0
+		self.p = 0 #port
 
-	def reinit():
-		self.accepts.clear()
+	def reinit(self):
+		#the point is to restart the ballots/values to initial vals
+		#self.accepts.clear()
+		#we don't clear top because we might need another round of paxos
 		self.ballotNum = [0,0]
 		self.ackList.clear() #we need to keep track of the acks from other siteInfo
 		self.propVal = None #null until a value has been proposed
-		self.acceptNum = [0,0]
+		self.acceptBal = [0,0]
 		self.numVotes = 1
 		self.leader = False #starts at false 
 		self.acceptVal = None #null until a value has been accepted 
+		self.p = 0
 		
 
 
@@ -57,6 +60,7 @@ class PRM(object):
 
 
 	def printFiles(log):
+		#print out log, but it could realistically work with others
 		result = ""
 		for data in log:
 			result += data[0]
@@ -106,10 +110,11 @@ class PRM(object):
         def receive(self, channels):
 		global stop
 		global log
+		global backupLog
 
 
-		for i in channels.keys():
-			sock = channels.get(i)	
+		for c in channels.keys():
+			sock = channels.get(c)	
 			ready = select.select([sock], [], [], 1)
 			if(ready[0]):
 				data = sock.recv(1024).decode()
@@ -127,14 +132,20 @@ class PRM(object):
 						#in case we're rerunning it
 						print("resume")
 						stop = False
+						log = backupLog[:]
 						for c in outgoingTCP.keys():
 							if(c == "cli"):
 								sock = outgoingTCP.get(c)
 								sock.sendall("process resuming".encode())
 					#WE NEED TO INCLUDE A FAIL SAFE IN CASE self CRASHES
 					#BACKUP self?!?!?!?!!?
+					#backup printt
 					elif(not process and stop and process[0] == " "):
-						print("error: process has been stopped")
+						print("error: process has been stopped/is empty")
+						if(stop and (process != 0) and (process.find("decide") != -1)):
+							key = process[1]
+							value = process[2]
+							backupLog.append([key, value])
 						continue
 
 					elif(process[0].find("total") != -1):
@@ -152,7 +163,11 @@ class PRM(object):
 					
 					elif(process[0].find("print") != -1):
 						print("print")
-						printFiles(log) 
+						result = printFiles(log) 
+						for c in outgoingTCP.keys():
+							if(c == "cli"):
+								sock = outgoingTCP.get(c)
+								sock.sendall(result.encode())
 					
 					elif(process[0].find("merge") != -1):
 						print("merge")
@@ -163,9 +178,14 @@ class PRM(object):
 					
 					elif(process[0].find("replicate") != -1):
 						print("replicate")
-						self.ballotNum[0] += 1
+						self.ballotNum[0] = 1
 						self.ballotNum[1] = siteNum
 						self.propVal[0] = process[1]
+						propList = " "
+						for i in range(2, len(input_string)):
+							propList += input_string[i]
+							propList += " "
+						self.propVal[1] = propList
 						self.leader = True
 						prepSend = "prepare" + str(self.ballotNum[0]) + " " + str(self.balltNum[1]) + "*"
 						for c in outgoingTCP.keys():
@@ -184,7 +204,8 @@ class PRM(object):
 					
 					elif(process[0].find("prepare") != -1):
 						print("prepare")
-						ballot = int(process[1])
+						ballot = int(process[1]) 
+						#ballodID
 						siteNum = process[2] 
 						#id for the siteNum
 						
@@ -217,38 +238,87 @@ class PRM(object):
 									sock.sendall(prepSend.encode())
 					
 					elif(process.find("accept") != -1):
+						print(accepted!)
 						bal = str(process[1]) + str(process[2])
-						if(bal in self.acceptNum):
-							self.acceptNum[bal] += 1
-						else:
-							self.acceptNum[bal] = 1
-						if(int(self.ballotNum[0]) < int(process[1]) or (int(self.ballotNum[0]) == int(process[1]) and int(self.ballotNum[1]) < int(process[2]))):
-							self.ballotNum[0] = process[1]
-							self.ballotNum[1] = process[2]
-							self.acceptBal[0] = process[1]
-							self.acceptBal[1] = process[2]
-							acceptVal = [process[3], process[4]]
-							self.acceptVal = accVal[:]
-						if(self.acceptNum[bal] == 1 ):
-							prepSend = "accept" + str(process[1]) + " " + str(process[2]) + " " + str(process[3]) + " " + str(process[4]) + "*"
+						if(self.accepts[bal] >= 1 and self.leader):
+							print("now deciding value...")
+							log.append([self.acceptVal[0], self.acceptVal[1]])
+							backupLog.append([self.acceptVal[0], self.acceptVal[1]])
+							prepSend = "decide" + str(self.acceptVal[0]) + " " + str(self.acceptVal[1]) + "*"
 							for c in outgoingTCP.keys():
 								if(c != "cli"):
 									sock = outgoingTCP.get(c)
 									sock.sendall(prepSend.encode())
-						if(self.acceptNum[bal] >= 2 and self.leader):
-							self.append([self.acceptVal[0], self.acceptVal[1]])
-							prepSend = "decide" + str(self.acceptVal[0]) + " " + str(self.acceptVal[1]) + "*"
-							for c in outgoingTCP.keys():
-								sock = outgoingTCP.get(c)
-								sock.sendall(prepSend.encode())
-							self.reinit
+								else:
+									time.sleep(1)
+									prepSend: "Paxos winner is " + str(self.acceptVal[0])
+									sock = outgoingTCP.get(c)
+									sock.sendall(prepSend.encode())
+							print("reinitializing paxos ballot values")
+							self.reinit()
+							accepts.clear()
+							#The above functions are restarting paxos values, and clearing our accepted channels
+							for c in incomingTCP.keys():
+								sock = channels.get(c)
+								ready = select.select([sock], [], [], 1)
+								if(ready[0]):
+									data = sock.recv(1024).decode()
+							return
+
+						elif(int(self.ballotNum[0]) < int(process[1]) or (int(self.ballotNum[0]) == int(process[1]) and int(self.ballotNum[1]) <= int(process[2]))):
+							#this is the case in case if our ballot is less than other ones
+							propList = ""
+							for i in range(4,len(process)):
+								propList += process[i]
+								propList += " "
+							self.ballotNum[0] = int(process[1])
+							self.ballotNum[1] = int(process[2])
+							self.acceptBal[0] = int (process[1])
+							self.acceptBal[1] = int (process[2])
+							acceptVal = [process[3], propList]
+							self.acceptVal = accVal[:]
+							self.leader = False
+							#you aren't the leader now
+							if(bal in accepts):
+								accepts[bal] += 1
+								print("accepts have been incremented")
+								#testing print above
+							else:
+								accepts[bal] = 1
+								print("accepts is 1")
+								#if not in accepts, init it to 1
+								prepSend = "accept" + str(process[1]) + " " + str(process[2]) + " " + str(process[3]) + " " + propList + "*"
+								for c in outgoingTCP.keys():
+									if(c != "cli"):
+										sock = outgoingTCP.get(c)
+										sock.sendall(prepSend.encode())
+
+	
 					
 					elif(process[0].find("decide") != -1):
+						propList = ""
+						for i in range(2 , len(process)):
+							propList += process[i]
+							propList += " "
 						acceptVal = [process[1], process[2]]
-						self.append(acceptVal)
-						self.reinit
-						sys.stdout.write("Printing prm: ")
+						log.append(acceptVal)
+						backupLog.append(acceptVal)
+						accepts.clear()
+						sys.stdout.write("printing prm's log:")
 						print(log)
+						for c in outgoingTCP.keys():
+							if(c == "cli" and self.propVal[0] != None):
+								time.sleep(2)
+								prepSend = "Winner paxos value is " + str(process[1])
+								sock = outgoingTCP.get(c)
+								sock.sendall(prepare.encode())
+						self.reinit
+						for c in incomingTCP.keys():
+								sock = channels.get(c)
+								ready = select.select([sock], [], [], 1)
+								if(ready[0]):
+									data = sock.recv(1024).decode()
+							return
 					else:
 						continue
 			return
