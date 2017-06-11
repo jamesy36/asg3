@@ -178,28 +178,28 @@ class cli:
                     files += input_string[i] + " "
                 files += "*"
                 reducerSock.sendall(files.encode())
-                receive(incomingTCP)
+                self.receive(incomingTCP)
             
             elif input_string[0] == 'print':
                     if(len(input_string) != 1):
                         print("Print")
                         continue
                     self.prmSock.sendall("print*".encode())
-                    receive(incomingTCP)
+                    self.receive(incomingTCP)
             
             elif input_string[0] == 'stop':
                 if(len(input_string) != 1):
                     print("stop")
                     continue
                 self.prmSock.sendall("stop*".encode())
-                receive(incomingTCP)
+                self.receive(incomingTCP)
             
             elif input_string[0] == 'resume':
                 if(len(input_string) != 1):
                     print("resume")
                     continue
                 self.prmSock.sendall("resume*".encode())
-                receive(incomingTCP)
+                self.receive(incomingTCP)
             
             elif input_string[0] == 'merge':
                 #if correct num of args
@@ -222,7 +222,7 @@ class cli:
                         data += input_string[i] + " "
                     data += "*"
                     self.prmSock.sendall(data.encode())
-                    receive(incomingTCP)  
+                    self.receive(incomingTCP)  
            
             elif input_string[0] == 'replicate':
                 #if correct num of args
@@ -230,7 +230,7 @@ class cli:
                     f = input_string[1] #filename
                     data = "replicate" + input_string[1] + "*"
                     self.prmSock.sendall(data.encode())
-                    receive(incomingTCP)
+                    self.receive(incomingTCP)
                 else:
                     print("Invalid number of args, need 2 args.")
 
