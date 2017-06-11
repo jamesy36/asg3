@@ -118,9 +118,9 @@ class PRM(object):
 				#print(data)
 				#above to help with debug
 				splitData = data.split("*")
-				if(splitData[0] != " "):
-					sys.stdout.write("commands or processes:")
-					print(splitData)
+				#if(splitData[0] != " "):
+					#sys.stdout.write("commands or processes:")
+					#print(splitData)
 				for data in range(0 , len(splitData) - 1):
 					process = splitData[data].split()
 					sys.stdout.write("processes:")
