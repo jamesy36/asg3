@@ -259,7 +259,7 @@ class PRM(object):
                                                     if(ready[0]):
                                                         data=sock.recv(1024).decode()
                                                 return
-                                        elif(int(self.ballotNum[0]) < int(process[1]) or (int(self.ballotNum[0]) == int(process[1]) and int(self.ballotNum[1] <= int(process[2]))):
+                                        elif(int(self.ballotNum[0]) < int(process[1]) or (int(self.ballotNum[0]) == int(process[1]) and int(self.ballotNum[1]) <= int(process[2]))):
                                                 propList = ""
                                                 for i in range(4, len(process)):
                                                     propList+=process(i)
