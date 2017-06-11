@@ -30,7 +30,7 @@ class cli:
        #needs to keep track of prm sockets
        self.socket_to_map = None
        self.socket_to_reduce = None
-       self.prmSock = None 
+       self.prmSock = socket(AF_INET, SOCK_STREAM)
        self.mapSock = None
        self.reducerSock = None
        self.mapsockets = []
@@ -55,12 +55,11 @@ class cli:
   
     def prmConnect(self, port):
         self.ip = "0.0.0.0"
-        prmSock = socket(AF_INET, SOCK_STREAM)
         addr = (self.ip, int(port))
         time.sleep(5)
         print("cli connecting to prm")
-        prmSock.connect(addr)
-        outgoingTCP["prm"] = prmSock
+        self.prmSock.connect(addr)
+        outgoingTCP["prm"] = self.prmSock
         print("cli connected to prm")
         print("cli receiving connection from prm")
         connection = self.server.accept()
@@ -185,21 +184,21 @@ class cli:
                     if(len(input_string) != 1):
                         print("Print")
                         continue
-                    prmSock.sendall("print*".encode())
+                    self.prmSock.sendall("print*".encode())
                     receive(incomingTCP)
             
             elif input_string[0] == 'stop':
                 if(len(input_string) != 1):
                     print("stop")
                     continue
-                prmSock.sendall("stop*".encode())
+                self.prmSock.sendall("stop*".encode())
                 receive(incomingTCP)
             
             elif input_string[0] == 'resume':
                 if(len(input_string) != 1):
                     print("resume")
                     continue
-                prmSock.sendall("resume*".encode())
+                self.prmSock.sendall("resume*".encode())
                 receive(incomingTCP)
             
             elif input_string[0] == 'merge':
@@ -208,7 +207,7 @@ class cli:
                     f1 = input_string[1]
                     f2 = input_string[2]
                     data = "merge" + f1 + " " + f2 + "*"
-                    prmSock.sendall(data.encode())
+                    self.prmSock.sendall(data.encode())
                 else:
                     print("Invalid number of args, need 3 args.")
             
@@ -222,7 +221,7 @@ class cli:
                     for i in range(1, len(input_string)):
                         data += input_string[i] + " "
                     data += "*"
-                    prmSock.sendall(data.encode())
+                    self.prmSock.sendall(data.encode())
                     receive(incomingTCP)  
            
             elif input_string[0] == 'replicate':
@@ -230,7 +229,7 @@ class cli:
                 if len(input_string) == 2:
                     f = input_string[1] #filename
                     data = "replicate" + input_string[1] + "*"
-                    prmSock.sendall(data.encode())
+                    self.prmSock.sendall(data.encode())
                     receive(incomingTCP)
                 else:
                     print("Invalid number of args, need 2 args.")
