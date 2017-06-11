@@ -14,7 +14,7 @@ stop = False #if a process gets stopped it'll be true
 
 
 
-class self(object):
+class PRM(object):
 
 	
 
@@ -127,7 +127,7 @@ class self(object):
 						#in case we're rerunning it
 						print("resume")
 						stop = False
-						for c in outgoingTCP.keys();
+						for c in outgoingTCP.keys():
 							if(c == "cli"):
 								sock = outgoingTCP.get(c)
 								sock.sendall("process resuming".encode())
@@ -280,15 +280,19 @@ with open(setup) as f:
 		if(nums[0] == siteNum):
 			ip = siteInfo[int(nums[1]) -1][0]
 			port = siteInfo[int(nums[1])-1][1]
-			self.p = int(port)
+			test.p = int(port)
 			s = socket(AF_INET, SOCK_STREAM)
 			addr = (ip, int(port))
 			time.sleep(10)
-			try:
-				s.connect(addr)
+			print(addr)
+			run = True
+                        while run:
+			    try:
+		            	s.connect(addr)
 				print("Connected to ", nums[1])
-			except error:
-				time.sleep(5)
+				run = False
+			    except error:
+			    	time.sleep(5)
 			outgoingTCP[nums[1]] = s
 		if(nums[1] == siteNum):
 			connect, addr = server.accept()
@@ -299,13 +303,13 @@ with open(setup) as f:
 
 connect, addr = server.accept()
 incomingTCP["cli"] = connect 
-print(connect)
-print(addr)
-print(incomingTCP)
+#print(connect)
+#print(addr)
+#print(incomingTCP)
 
 #Opening a connection with the CLI
 s = socket(AF_INET, SOCK_STREAM)
-cli_port = int(self.p) + 5
+cli_port = int(test.p) - 4 
 address = ("127.0.0.1", cli_port)
 time.sleep(10)
 keep_going = True
@@ -317,9 +321,9 @@ while keep_going:
         time.sleep(5)
         keep_going = True
 outgoingTCP["cli"] = s
-print(outgoingTCP)
+#print(outgoingTCP)
 
 print("Ready for commands")
 while(True):
-    self.receive(incomingTCP)
+    test.receive(incomingTCP)
     #time.sleep(1)

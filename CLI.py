@@ -5,16 +5,25 @@ import sys
 import os
 import select
 import fileinput
+
+initPort = 5001
+mapPort1 = 5002
+mapPort2 = 5003
+reducerPort = 5004
+prmPort = 5005
+incomingTCP = dict()
+outgoingTCP = dict()
+
 class cli:
 
-    initPort = 5001
-    mapPort1 = 5002
-    mapPort2 = 5003
-    reducerPort = 5004
-    prmPort = 5005
+    #initPort = 5001
+    #mapPort1 = 5002
+    #mapPort2 = 5003
+    #reducerPort = 5004
+    #prmPort = 5005
 
-    incomingTCP = dict()
-    outgoingTCP = dict()
+    #incomingTCP = dict()
+    #outgoingTCP = dict()
 
     def __init__(self):
        #needs to be able to determine how many sockets there will be
@@ -25,35 +34,39 @@ class cli:
        self.mapSock = None
        self.reducerSock = None
        self.mapsockets = []
+       self.server = socket(AF_INET, SOCK_STREAM)
+       self.server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+       self.server.bind(("0.0.0.0", int (initPort)))
+       self.server.listen(10)
         #since we have multiple mappers, and i want it to be dynamic i'm trying this
        print("CLI init'd")
 
 
 
-    def setup(self):
+    #def setup(self):
 
         #setting up connections
-        server = socket(AF_INET)
-        server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        server.bind(("0.0.0.0", int (initPort)))
-        server.listen(10)
-        print("cli receiving connection from prm")
-        connection = server.accept()
-        #address = server.accept()
-        incomingTCP["prm"] = connection
-        print("cli received connection from prm")
-
+        #server = socket(AF_INET)
+        #server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        #server.bind(("0.0.0.0", int (initPort)))
+        #server.listen(10)
+        
         
   
-    def prmConnect(self):
-        self.ip = "127.0.0.1"
+    def prmConnect(self, port):
+        self.ip = "0.0.0.0"
         prmSock = socket(AF_INET, SOCK_STREAM)
-        addr = (self.ip, int(prmPort))
+        addr = (self.ip, int(port))
         time.sleep(5)
         print("cli connecting to prm")
         prmSock.connect(addr)
         outgoingTCP["prm"] = prmSock
         print("cli connected to prm")
+        print("cli receiving connection from prm")
+        connection = self.server.accept()
+        #address = server.accept()
+        incomingTCP["prm"] = connection
+        print("cli received connection from prm")
 
 
     def getSize(self, file):
@@ -70,7 +83,7 @@ class cli:
         if(fileSize%2 == 0):
             offset = fileSize//2
         else:
-            offset = fileSize - (offset = fileSize//2)
+            offset = fileSize - (offset + fileSize//2)
         file = open(file)
         while(True):
             c = file.read(1)
@@ -86,31 +99,31 @@ class cli:
     def fileTranslation(file):
         result = ""
         with open(file) as f:
-            for line in f.readlines()
-            current = line.split()
-            result += current[0] + " " + current[1] + " "
+            for line in f.readlines():
+                current = line.split()
+                result += current[0] + " " + current[1] + " "
         return result
 
 
 
     def mapperConnect(self, ID, port):
         #connect to mapper
-        (mapSock+ID) = socket(AF_INET, SOCK_STREAM)
-        addr = (self.ip, int(mapPort+ID))
-        print("connecting to mapper " + ID)
-        (mapSock+ID).connect(addr)
-        outgoingTCP["mapper" + ID] = mapSock
+        s = socket(AF_INET, SOCK_STREAM)
+        addr = (self.ip, int(port))
+        print("connecting to mapper " + str(ID))
+        s.connect(addr)
+        outgoingTCP["mapper" + str(ID)] = s 
 
         #receive connection from mapper
-        print("cli receiving connection from mapper1")
-        connect = server.accept()
+        print("cli receiving connection from mapper " + str(ID))
+        addr, connect = self.server.accept()
         #addr = server.accept()
-        incomingTCP["mapper" + ID] = connect
-        print("cli has connect with mapper" + ID )
+        incomingTCP["mapper" + str(ID)] = connect
+        print("cli has connect with mapper" + str(ID) )
 
     def reducerConnect(self, port):
         reducerSock = socket(AF_INET, SOCK_STREAM)
-        addr = (self.ip, int(reducerPort))
+        addr = (self.ip, int(port))
         print("connecting to reducer")
         reducerSock.connect(addr)
         outgoingTCP["reducer"] = reducerSock
@@ -118,8 +131,8 @@ class cli:
 
         #receive connection from reducer
         print("cli receiving connection from reducer")
-        connection = server.accept()
-        addr = server.accept()
+        addr, connection = self.server.accept()
+        #addr = self.server.accept()
         incomingTCP["reducer"] = connection
         print("cli has received connection from reducer")
 
@@ -139,10 +152,12 @@ class cli:
 
     def commands(self):
     #we need to implement the replicate, stop, resume, total, print merge 
-        print("Enter Command:")
-        for line in fileinput.inptu():
-            process(line)
-            input_string = line.split()
+        cont = True
+        while cont:
+            cmd = raw_input("Enter Command: ")
+            print(cmd)
+            input_string = cmd.split()
+            print(input_string)
                     
                     #set up blank message
                     # msg = ''
@@ -150,14 +165,14 @@ class cli:
            
             if(input_string[0] == "map"):
                 if(len(input_string) != 4):
-                    print("invalid number of args, need 3 args")
+                    print("Invalid number of args, need 3 args")
                     continue
                 file = input_string[1]
                 self.mapFile(file)
             
             elif(input_string[0] == "reduce"):
                 if(len(input_string) < 2):
-                    print("invalid number of args, need more than 2 inputs")
+                    print("Invalid number of args, need more than 2 inputs")
                     continue
                 files = "reduce"
                 for i in range(1, len(input_string)):
@@ -195,12 +210,12 @@ class cli:
                     data = "merge" + f1 + " " + f2 + "*"
                     prmSock.sendall(data.encode())
                 else:
-                    print("invalid number of args, need 3 args.")
+                    print("Invalid number of args, need 3 args.")
             
             elif input_string[0] == 'total':
                 #if improper number of args
                 if len(input_string) < 2:
-                    print("invalid number of args, need 3 args.")
+                    print("Invalid number of args, need 3 args.")
                     continue
                 else:
                     data = "total"
@@ -218,7 +233,10 @@ class cli:
                     prmSock.sendall(data.encode())
                     receive(incomingTCP)
                 else:
-                    print("invalid number of args, need 2 args.")
+                    print("Invalid number of args, need 2 args.")
+
+            elif input_string[0] == 'exit':
+                cont = False
             
             else:
                 print("no matching command found.")
@@ -229,10 +247,10 @@ class cli:
                 continue
 
 test = cli()
-test.prmConnect()
-test.mapperConnect(self, 1, mapPort1)
-test.mapperConnect(self, 2, mapPort2)
-test.reducerConnect(self, reducerPort)
-test.setup()
+test.prmConnect(prmPort)
+test.mapperConnect(1, mapPort1)
+test.mapperConnect(2, mapPort2)
+test.reducerConnect(reducerPort)
+#test.setup()
 test.commands()
 print("done")

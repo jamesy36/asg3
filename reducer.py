@@ -36,6 +36,7 @@ def reducer(groupMed, file):
 	return
 
 
+#server for connection
 
 ip = "127.0.0.1"
 port = sys.argv[1]
@@ -71,6 +72,6 @@ while(True):
 			#if it is the correct command, call the mapper function
 			file = input_string[1]
 			for i in range(1, len(input_string)):
-			f = input_string[i]
-			groupMed.append(f)
+				f = input_string[i]
+				groupMed.append(f)
 			reducer(groupMed, file)
