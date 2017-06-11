@@ -46,16 +46,20 @@ cliServer = socket(AF_INET, SOCK_STREAM)
 cliServer.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 cliServer.bind(('', int(port)))
 cliServer.listen(5)
+print("Reducer listening for CLI connection")
 connection = cliServer.accept()
 address = cliServer.accept()
 incomingTCP.append(connection)
+print("CLI successfully connected to Reducer")
 #listen for connection from CLI
 
 sock = socket(AF_INET,SOCK_STREAM)
 address = (ip, int(cli))
 time.sleep(5)
+print("Reducer connecting to CLI")
 sock.connect(address)
 outgoingTCP.append(sock)
+print("Reducer successfully connected to CLI")
 #open connection with CLI
 
 while(True):

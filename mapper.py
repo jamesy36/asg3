@@ -45,22 +45,25 @@ def mapper(file, offset, size):
 ip = "127.0.0.1"
 port = sys.argv[1]
 cli = sys.argv[2]
-uniqueid = sys.argv[3]
-
+uniqueid = sys.argv[3] 
 cliServer = socket(AF_INET, SOCK_STREAM)
 cliServer.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 cliServer.bind(('', int(port)))
 cliServer.listen(5)
-connection = cliServer.accept()
-address = cliServer.accept()
+print("mapper listening for CLI")
+address, connection = cliServer.accept()
+#address = cliServer.accept()
 incomingTCP.append(connection)
+print("CLI successfully connected to mapper")
 #listen for connection from CLI
 
 sock = socket(AF_INET,SOCK_STREAM)
 address = (ip, int(cli))
 time.sleep(5)
+print("Mapper attempting to connect to CLI")
 sock.connect(address)
 outgoingTCP.append(sock)
+print("Mapper successfully connected to CLI")
 #open connection with CLI
 
 while(True):

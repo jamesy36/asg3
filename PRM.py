@@ -303,9 +303,9 @@ with open(setup) as f:
 
 connect, addr = server.accept()
 incomingTCP["cli"] = connect 
-print(connect)
-print(addr)
-print(incomingTCP)
+#print(connect)
+#print(addr)
+#print(incomingTCP)
 
 #Opening a connection with the CLI
 s = socket(AF_INET, SOCK_STREAM)
@@ -321,7 +321,7 @@ while keep_going:
         time.sleep(5)
         keep_going = True
 outgoingTCP["cli"] = s
-print(outgoingTCP)
+#print(outgoingTCP)
 
 print("Ready for commands")
 while(True):
