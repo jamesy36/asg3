@@ -325,5 +325,5 @@ print(outgoingTCP)
 
 print("Ready for commands")
 while(True):
-    self.receive(incomingTCP)
+    test.receive(incomingTCP)
     #time.sleep(1)
