@@ -13,7 +13,7 @@ def reducer(groupMed, file):
 	words = dict()
 	for files in groupMed:
 		with open(files) as f:
-			for line in f.readlines()
+                    for line in f.readlines():
 			word = currentLine[0]
 			counter = int(currentLine[1])
 			if(word in words.keys()):
@@ -36,7 +36,6 @@ def reducer(groupMed, file):
 	return
 
 
-#server for connection
 
 ip = "127.0.0.1"
 port = sys.argv[1]
@@ -47,16 +46,19 @@ cliServer = socket(AF_INET, SOCK_STREAM)
 cliServer.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 cliServer.bind(('', int(port)))
 cliServer.listen(5)
-connection = cliServer.accept()
-address = cliServer.accept()
+print("Reducer listening for CLI connection")
+connection, address = cliServer.accept()
 incomingTCP.append(connection)
+print("CLI successfully connected to Reducer")
 #listen for connection from CLI
 
 sock = socket(AF_INET,SOCK_STREAM)
 address = (ip, int(cli))
 time.sleep(5)
+print("Reducer connecting to CLI")
 sock.connect(address)
 outgoingTCP.append(sock)
+print("Reducer successfully connected to CLI")
 #open connection with CLI
 
 while(True):
@@ -72,6 +74,6 @@ while(True):
 			#if it is the correct command, call the mapper function
 			file = input_string[1]
 			for i in range(1, len(input_string)):
-				f = input_string[i]
-				groupMed.append(f)
+			    f = input_string[i]
+			    groupMed.append(f)
 			reducer(groupMed, file)
