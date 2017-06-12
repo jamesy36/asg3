@@ -337,7 +337,7 @@ with open(setup) as f:
 		siteInfo.append([data for data in line])
 
 	#server.bind(('', int(siteInfo[int(siteNum) -1][1])))
-	server.bind(("127.0.0.1", port))
+	server.bind(("0.0.0.0", port))
 	#use the 2nd one for euca
 	server.listen(10)
 
@@ -376,7 +376,7 @@ incomingTCP["cli"] = connect
 #Opening a connection with the CLI
 s = socket(AF_INET, SOCK_STREAM)
 cli_port = int(test.p) - 4 
-address = ("127.0.0.1", cli_port)
+address = ("0.0.0.0", cli_port)
 time.sleep(10)
 keep_going = True
 while keep_going:
