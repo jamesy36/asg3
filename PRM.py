@@ -32,7 +32,7 @@ class PRM(object):
 		self.p = 0
 
 	def reinit():
-		self.accepts.clear()
+		#self.accepts.clear()
 		self.ballotNum = [0,0]
 		self.ackList.clear() #we need to keep track of the acks from other siteInfo
 		self.propVal = None #null until a value has been proposed
@@ -55,7 +55,22 @@ class PRM(object):
 							total += counter
 		return total
 
-
+	def printPax(self):
+		sys.stdout.write("ballotNum: ")
+		print(self.ballotNum)
+		sys.stdout.write("acceptBal ")
+		print(self.acceptBal)
+		sys.stdout.write("acceptVal: ")
+		print(self.acceptVal)
+		sys.stdout.write("ackList: ")
+		print(self.ackList)
+		sys.stdout.write("propVal: ")
+		print(self.propVal)
+		sys.stdout.write("numVotes: ")
+		print(self.numVotes)
+		sys.stdout.write("leader: ")
+		print(self.leader)
+		
 
 	def printFiles(self, log):
 		result = ""
@@ -222,7 +237,7 @@ class PRM(object):
 						acceptVal = [process[5], process[6]]
 						rcvsiteNum = process[7]
 						thisAck = [balNum, acceptBal, acceptVal, rcvsiteNum]
-						self.acklist.append(thisAck)
+						self.ackList.append(thisAck)
 						if(len(self.ackList) + 1 >= 2):
 							#if majority of acks
 							if(self.acknowledgeCheck(self.ackList)):
@@ -297,6 +312,7 @@ class PRM(object):
 						log.append(acceptVal)
 						backupLog.append(acceptVal)
 						accepts.clear()
+						self.printPax()
                                                 sys.stdout.write("printing PRM's log: ")
                                                 print(log)
                                                 for c in outgoingTCP.keys():
