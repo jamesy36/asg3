@@ -80,6 +80,8 @@ while(True):
 			offset = int(input_string[2])
 			size = int(input_string[3])
 			mapper(File, offset, size)
+			send = "Mapper done"
+			sock.sendall(send.encode()) 
 
 
 

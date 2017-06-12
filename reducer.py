@@ -80,3 +80,6 @@ while(True):
 			    File = input_string[i]
 			    groupMed.append(f)
 			reducer(groupMed, File)
+			Ssock = outgoingTCP[0]
+			send = "Reducer finished"
+			Ssock.sendall(send.encode())
