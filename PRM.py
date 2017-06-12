@@ -35,7 +35,7 @@ class PRM(object):
                 self.accepts.clear()
                 self.ballotNum = [0,0]
                 self.ackList.clear() #we need to keep track of the acks from other siteInfo
-                self.propVal = None #null until a value has been proposed
+                self.propVal = [None, None] #null until a value has been proposed
                 self.acceptBal = [0,0]
                 self.numVotes = 1
                 self.leader = False #starts at false 
