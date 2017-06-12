@@ -66,7 +66,7 @@ print("Reducer successfully connected to CLI")
 while(True):
 	#waiting for command
 	process = connection.recv(1024).decode()
-        print("REDUCER: ", process)
+        #print("REDUCER: ", process)
 	if(not process):
 		continue
 	else:
