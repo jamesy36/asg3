@@ -179,8 +179,8 @@ class PRM(object):
                                                 self.ballotNum[1] = self.siteNum
                                                 self.propVal[0] = process[1]
                                                 propList = " "
-                                                for i in range(2, len(input_string)):
-                                                    propList+=input_string[i]
+                                                for i in range(2, len(process)):
+                                                    propList+=process[i]
                                                     propList+=" "
                                                 self.propVal[1] = propList
                                                 self.leader = True
