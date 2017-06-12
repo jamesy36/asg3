@@ -62,7 +62,7 @@ class cli:
         outgoingTCP["prm"] = self.prmSock
         print("cli connected to prm")
         print("cli receiving connection from prm")
-        connection = self.server.accept()
+        connection, address = self.server.accept()
         #address = server.accept()
         incomingTCP["prm"] = connection
         print("cli received connection from prm")
@@ -89,7 +89,7 @@ class cli:
             if c == " ":
                 break
             offset += 1
-        msg1 = f + " " + "0" + " " + str(offset) + "*"
+        msg1 = f + " " + "0" + " " + str(offset) + "*" #issue here can't add f and str
         msg2 = f + " " + str(offset) + " " + str(file_size//2) + "*"
         mapSock1.sendall(msg1.encode())
         mapSock2.sendall(msg2.encode())
@@ -115,7 +115,7 @@ class cli:
 
         #receive connection from mapper
         print("cli receiving connection from mapper " + str(ID))
-        addr, connect = self.server.accept()
+        connect, addr = self.server.accept()
         #addr = server.accept()
         incomingTCP["mapper" + str(ID)] = connect
         print("cli has connect with mapper" + str(ID) )
@@ -130,7 +130,7 @@ class cli:
 
         #receive connection from reducer
         print("cli receiving connection from reducer")
-        addr, connection = self.server.accept()
+        connection, addr = self.server.accept()
         #addr = self.server.accept()
         incomingTCP["reducer"] = connection
         print("cli has received connection from reducer")
