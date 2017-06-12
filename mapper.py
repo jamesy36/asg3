@@ -8,7 +8,7 @@ import select
 incomingTCP = []
 outgoingTCP = []
 
-def mapper(file, offset, size):
+def mapper(File, offset, size):
 	words = dict()
 	#create dictionary to hold words from file
 	temp = ""
@@ -32,7 +32,7 @@ def mapper(file, offset, size):
 		else:
 			words[keywords] = 1
 
-	result = open(file, + "_I_" + uniqueid, "w")
+	result = open(File, + "_I_" + uniqueid, "w")
 	for i in words.keys():
 		result.write(str(i))
 		result.write(" ")
@@ -76,10 +76,10 @@ while(True):
 		#command, check to see if its map
 		if(input_string[0].find("map") != -1):
 			#if it is the correct command, call the mapper function
-			file = input_string[1]
+			File = input_string[1]
 			offset = int(input_string[2])
 			size = int(input_string[3])
-			mapper(file, offset, size)
+			mapper(File, offset, size)
 
 
 

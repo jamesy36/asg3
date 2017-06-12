@@ -8,15 +8,16 @@ import select
 incomingTCP = []
 outgoingTCP = []
 
-def reducer(groupMed, file):
+def reducer(groupMed, File):
 	#groupMed like group of Medium/intermediate hah
 	words = dict()
 	for files in groupMed:
 		with open(files) as f:
                     for line in f.readlines():
-			word = line[0]
-			print(line[1])
-			counter = int(line[1])
+                        l = line.split()
+			word = l[0]
+			print(l[1])
+			counter = int(l[1])
 			if(word in words.keys()):
 				oldCounter = words.get(word)
 				newCounter = int(oldCounter + counter)
@@ -25,9 +26,9 @@ def reducer(groupMed, file):
 				words[word] = count
 
 
-	temp = file.split("_")[0]	
+	temp = File.split("_")[0]	
 	newFile = temp + "_reduced"		
-	result = open(file, "w")
+	result = open(File, "w")
 	for i in words.keys():
 		result.write(str(i))
 		result.write(" ")
@@ -65,6 +66,7 @@ print("Reducer successfully connected to CLI")
 while(True):
 	#waiting for command
 	process = connection.recv(1024).decode()
+        print("REDUCER: ", process)
 	if(not process):
 		continue
 	else:
@@ -73,8 +75,8 @@ while(True):
 		#command, check to see if its map
 		if(input_string[0].find("reduce") != -1):
 			#if it is the correct command, call the mapper function
-			file = input_string[1]
+			File = input_string[1]
 			for i in range(1, len(input_string)):
 			    f = input_string[i]
 			    groupMed.append(f)
-			reducer(groupMed, file)
+			reducer(groupMed, File)
