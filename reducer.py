@@ -77,6 +77,6 @@ while(True):
 			#if it is the correct command, call the mapper function
 			File = input_string[1]
 			for i in range(1, len(input_string)):
-			    f = input_string[i]
+			    File = input_string[i]
 			    groupMed.append(f)
 			reducer(groupMed, File)

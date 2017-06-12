@@ -194,7 +194,7 @@ class cli:
                     continue
                 files = "reduce"
                 for i in range(1, len(input_string)):
-                    files += input_string[i] + " "
+                    files += " " + input_string[i]
                 files += "*"
                 try:
                     self.reducerSock.sendall(files.encode())
