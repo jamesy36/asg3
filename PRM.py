@@ -115,7 +115,7 @@ class PRM(object):
 			ready = select.select([sock], [], [], 1)
                         #print("PRM: ready to receive command")
 			if(ready[0]):
-			        print("PRM: socket ready to receive")
+			        #print("PRM: socket ready to receive")
 				data = sock.recv(1024).decode()
 				#print(data)
 				#above to help with debug
