@@ -77,9 +77,13 @@ while(True):
 		if(input_string[0].find("map") != -1):
 			#if it is the correct command, call the mapper function
 			File = input_string[1]
-			offset = int(input_string[2])
-			size = int(input_string[3])
-			mapper(File, offset, size)
+			File_strip = File.translate(None, '*')
+			offset = input_string[2]
+			offset_strip = offset.translate(None, '*')
+			size = input_string[3]
+			size_strip = size.translate(None, '*')
+                        print("MAPPER: File, offset, size:", File, offset, size)
+			mapper(File, int(offset), int(size))
 			send = "Mapper done"
 			sock.sendall(send.encode()) 
 
