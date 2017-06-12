@@ -279,7 +279,7 @@ class cli:
                 #if correct num of args
                 if len(input_string) == 2:
                     f = input_string[1] #filename
-                    data = "replicate" + input_string[1] + "*"
+                    data = "replicate " + input_string[1] + "*"
                     try:
                         self.prmSock.sendall(data.encode())
                     except error:
