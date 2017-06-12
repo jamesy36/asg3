@@ -181,7 +181,7 @@ class PRM(object):
                                         elif(process[0].find("replicate") != -1):
                                                 print("PRM: replicate")
                                                 self.ballotNum[0] = 1
-                                                self.ballotNum[1] = siteNum
+                                                self.ballotNum[1] = self.siteNum
                                                 self.propVal[0] = process[1]
                                                 propList = " "
                                                 for i in range(2, len(input_string)):
@@ -207,23 +207,23 @@ class PRM(object):
                                         elif(process[0].find("prepare") != -1):
                                                 print("PRM: prepare")
                                                 ballot = int(process[1])
-                                                siteNum = process[2] 
+                                                self.siteNum = process[2] 
                                                 #id for the siteNum
 
-                                                if(self.ballotNum[0] < ballot or (self.ballotNum[0] == ballot and self.ballotNum[1] < int(siteNum))):
+                                                if(self.ballotNum[0] < ballot or (self.ballotNum[0] == ballot and self.ballotNum[1] < int(self.siteNum))):
                                                         self.ballotNum[0] = ballot 
-                                                        self.ballotNum[1] = siteNum
+                                                        self.ballotNum[1] = self.siteNum
                                                         prepSend = "ack" + str(self.ballotNum[0]) + " " + str(self.ballotNum[1])
-                                                        sock = outgoingTCP.get(siteNum)
+                                                        sock = outgoingTCP.get(self.siteNum)
                                                         sock.sendall(prepSend.encode())
 
                                         elif(process[0].find("ack") != -1):
                                                 print("PRM: acknowledge")
                                                 balNum = [process[1], process[2]]
                                                 acceptBal = [process[3], process[4]]
-                                                acceptVal = [process[5], process[6]]
+                                                self.acceptVal = [process[5], process[6]]
                                                 rcvsiteNum = process[7]
-                                                thisAck = [balNum, acceptBal, acceptVal, rcvsiteNum]
+                                                thisAck = [balNum, acceptBal, self.acceptVal, rcvsiteNum]
                                                 self.acklist.append(thisAck)
                                                 if(len(self.ackList) + 1 >= 2):
                                                     #if majority of acks
@@ -329,6 +329,7 @@ server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 
 siteNum = sys.argv[1]
 setup = sys.argv[2]
+test.siteNum = siteNum
 print("PRM: Esablishing connection!")
 with open(setup) as f:
         numSites = f.readline().strip() 
