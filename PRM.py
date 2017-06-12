@@ -28,7 +28,7 @@ class PRM(object):
             self.numVotes = 1
             self.leader = False #starts at false 
             self.acceptVal = None #null until a value has been accepted 
-            self.siteNum = siteNum
+            self.id = id
             self.p = 0
 
         def reinit():
