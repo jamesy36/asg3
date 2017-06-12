@@ -161,7 +161,7 @@ class PRM(object):
 					
 					elif(process[0].find("print") != -1):
                                                 print("PRM: print")
-						result = self.printFiles(log) 
+						result = printFiles(log) 
 						for c in outgoingTCP.keys():
 						    if(c == "cli"):
 						        sock = outgoingTCP.get(c)
