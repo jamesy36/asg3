@@ -85,14 +85,16 @@ class cli:
         else:
             offset = fileSize - fileSize//2
         f = open(File)
+        '''
         while(True):
             c = f.read(1)
             if c == " ":
                 break
             offset += 1
             print("CLI: mapfile funct debug", c)
-        msg1 = f + " " + "0" + " " + str(offset) + "*" #issue here can't add f and str
-        msg2 = f + " " + str(offset) + " " + str(file_size//2) + "*"
+        '''
+        msg1 ="map " + str(File) + " " + "0" + " " + str(offset) + "*" #issue here can't add f and str
+        msg2 = "map " + str(File) + " " + str(offset) + " " + str(file_size//2) + "*"
         try:
             self.mapSock1.sendall(msg1.encode())
         except error:
