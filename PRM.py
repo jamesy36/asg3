@@ -20,16 +20,17 @@ class PRM(object):
 	
 
 	def _init_(self, index, id ):
-		self.accepts = dict()
-		self.ballotNum = [None] * 2 
-		self.ackList = [] #we need to keep track of the acks from other siteInfo
-		self.propVal = None #null until a value has been proposed
-		self.acceptBal = [0,0]
-		self.numVotes = 1
-		self.leader = False #starts at false 
-		self.acceptVal = None #null until a value has been accepted 
-		self.id = id
-		self.p = 0
+	    self.accepts = dict()
+	    self.ballotNum = [0, 0] 
+	    self.ackList = [] #we need to keep track of the acks from other siteInf
+	    self.propVal = None #null until a value has been proposed
+	    self.acceptBal = [0,0]
+	    self.numVotes = 1
+	    self.leader = False #starts at false 
+	    self.acceptVal = None #null until a value has been accepted 
+	    self.id = id
+	    self.p = 0
+	    print("PRM: init'd")
 
 	def reinit():
 		self.accepts.clear()

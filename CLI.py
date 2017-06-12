@@ -201,6 +201,7 @@ class cli:
                 except error:
                     time.sleep(5)
                     print("reduce message not passed|||", error)
+                print("CLI: msg to reducer::", files)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'print':
