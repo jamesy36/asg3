@@ -70,16 +70,17 @@ while(True):
 	if(not process):
 		continue
 	else:
-		groupMed = []
+		g = []
 		input_string = process.split()
 		#command, check to see if its map
 		if(input_string[0].find("reduce") != -1):
 			#if it is the correct command, call the mapper function
 			File = input_string[1]
+                        print("REDUCER: ", File)
 			for i in range(1, len(input_string)):
-			    File = input_string[i]
-			    groupMed.append(f)
-			reducer(groupMed, File)
+			    f = input_string[i]
+			    g.append(f)
+			reducer(g, File)
 			Ssock = outgoingTCP[0]
 			send = "Reducer finished"
 			Ssock.sendall(send.encode())
