@@ -28,7 +28,7 @@ class PRM(object):
             self.numVotes = 1
             self.leader = False #starts at false 
             self.acceptVal = None #null until a value has been accepted 
-            self.id = id
+            self.siteNum = siteNum
             self.p = 0
 
         def reinit():
@@ -87,13 +87,13 @@ class PRM(object):
 
         def highestBallot(logs):
                 ballotNum = 0
-                self.id = 0
+                siteNum = 0
                 highest = [0,0]
                 for ack in logs:
-                    if(int(ack[0][0]) > ballotNum or int(ack[0][0]) == ballotNum and int(ack([0][1]) > self.id)):
+                    if(int(ack[0][0]) > ballotNum or int(ack[0][0]) == ballotNum and int(ack([0][1]) > siteNum)):
                                 ballotNum = logs[0][1]
-                                self.id = logs[0][1]
-                                highest = [ballotNum, self.id]
+                                siteNum = logs[0][1]
+                                highest = [ballotNum, siteNum]
 
                 return highest
 
@@ -176,7 +176,7 @@ class PRM(object):
                                         elif(process[0].find("replicate") != -1):
                                                 print("PRM: replicate")
                                                 self.ballotNum[0] = 1
-                                                self.ballotNum[1] = self.self.id
+                                                self.ballotNum[1] = self.siteNum
                                                 self.propVal[0] = process[1]
                                                 propList = " "
                                                 for i in range(2, len(process)):
@@ -202,14 +202,14 @@ class PRM(object):
                                         elif(process[0].find("prepare") != -1):
                                                 print("PRM: prepare")
                                                 ballot = int(process[1])
-                                                self.self.id = process[2] 
-                                                #id for the self.id
+                                                self.siteNum = process[2] 
+                                                #id for the siteNum
 
-                                                if(self.ballotNum[0] < ballot or (self.ballotNum[0] == ballot and self.ballotNum[1] < int(self.self.id))):
+                                                if(self.ballotNum[0] < ballot or (self.ballotNum[0] == ballot and self.ballotNum[1] < int(self.siteNum))):
                                                         self.ballotNum[0] = ballot 
-                                                        self.ballotNum[1] = self.self.id
+                                                        self.ballotNum[1] = self.siteNum
                                                         prepSend = "ack" + str(self.ballotNum[0]) + " " + str(self.ballotNum[1])
-                                                        sock = outgoingTCP.get(self.self.id)
+                                                        sock = outgoingTCP.get(self.siteNum)
                                                         sock.sendall(prepSend.encode())
 
                                         elif(process[0].find("ack") != -1):
@@ -217,8 +217,8 @@ class PRM(object):
                                                 balNum = [process[1], process[2]]
                                                 acceptBal = [process[3], process[4]]
                                                 self.acceptVal = [process[5], process[6]]
-                                                rcvself.id = process[7]
-                                                thisAck = [balNum, acceptBal, self.acceptVal, rcvself.id]
+                                                rcvsiteNum = process[7]
+                                                thisAck = [balNum, acceptBal, self.acceptVal, rcvsiteNum]
                                                 self.acklist.append(thisAck)
                                                 if(len(self.ackList) + 1 >= 2):
                                                     #if majority of acks
@@ -322,9 +322,9 @@ port = 5005
 server = socket(AF_INET, SOCK_STREAM)
 server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 
-self.id = sys.argv[1]
+siteNum = sys.argv[1]
 setup = sys.argv[2]
-test.self.id = self.id
+test.siteNum = siteNum
 print("PRM: Esablishing connection!")
 with open(setup) as f:
         numSites = f.readline().strip() 
@@ -332,14 +332,14 @@ with open(setup) as f:
                 line = f.readline().strip().split()
                 siteInfo.append([data for data in line])
 
-        #server.bind(('', int(siteInfo[int(self.id) -1][1])))
+        #server.bind(('', int(siteInfo[int(siteNum) -1][1])))
         server.bind(("0.0.0.0", port))
         #use the 2nd one for euca
         server.listen(10)
 
         for line in f.readlines():
                 nums = line.strip().split()
-                if(nums[0] == self.id):
+                if(nums[0] == siteNum):
                         ip = siteInfo[int(nums[1]) -1][0]
                         port = siteInfo[int(nums[1])-1][1]
                         test.p = int(port)
@@ -356,7 +356,7 @@ with open(setup) as f:
                             except error:
                                 time.sleep(5)
                         outgoingTCP[nums[1]] = s
-                if(nums[1] == self.id):
+                if(nums[1] == siteNum):
                         connect, addr = server.accept()
                         #addr = server.accept()
                         incomingTCP[nums[0]] = connect
