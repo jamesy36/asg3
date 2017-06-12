@@ -81,13 +81,13 @@ while(True):
 		if(input_string[0].find("map") != -1):
 			#if it is the correct command, call the mapper function
 			File = input_string[1]
-			File_translate = File.translate(trantab, ' ')
+			File_translate = File.translate(trantab)
 			File_strip = File_translate.strip()
 			offset = input_string[2]
-			offset_translate = offset.translate(trantab, ' ')
+			offset_translate = offset.translate(trantab)
                         offset_strip = File_translate.strip()
 			size = input_string[3]
-			size_translate = size.translate(trantab, ' ')
+			size_translate = size.translate(trantab)
 			size_strip = File_translate.strip()
                         print("MAPPER: File, offset, size:", File_strip, offset_strip, size_strip)
 			mapper(File_strip, int(offset_strip), int(size_strip))

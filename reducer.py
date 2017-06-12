@@ -16,7 +16,7 @@ def reducer(groupMed, File):
 	#groupMed like group of Medium/intermediate hah
 	words = dict()
 	for files in groupMed:
-	        files_t = files.translate(trantab, " ")
+	        files_t = files.translate(trantab)
 	        files_strip = files_t.strip()
 		with open(files_strip) as f:
                     for line in f.readlines():
