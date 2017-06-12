@@ -208,7 +208,7 @@ class cli:
             elif input_string[0] == 'print':
                 print("CLI: print")
                 if(len(input_string) != 1):
-                    print("Print")
+                    print("Print ")
                     continue
                 try:
                     self.prmSock.sendall("print*".encode())
@@ -220,7 +220,7 @@ class cli:
             elif input_string[0] == 'stop':
                 print("CLI: stop")
                 if(len(input_string) != 1):
-                    print("stop")
+                    print("stop ")
                     continue
                 try:
                     self.prmSock.sendall("stop*".encode())
@@ -230,9 +230,9 @@ class cli:
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'resume':
-                print("CLI: resume")
+                print("CLI: resume ")
                 if(len(input_string) != 1):
-                    print("resume")
+                    print("resume ")
                     continue
                 try:
                     self.prmSock.sendall("resume*".encode())
@@ -242,12 +242,12 @@ class cli:
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'merge':
-                print("CLI: merge")
+                print("CLI: merge ")
                 #if correct num of args
                 if len(input_string) == 3:
                     f1 = input_string[1]
                     f2 = input_string[2]
-                    data = "merge" + f1 + " " + f2 + "*"
+                    data = "merge " + f1 + " " + f2 + "*"
                     try:
                         self.prmSock.sendall(data.encode())
                     except error:
@@ -263,7 +263,7 @@ class cli:
                     print("Invalid number of args, need 3 args.")
                     continue
                 else:
-                    data = "total"
+                    data = "total "
                     for i in range(1, len(input_string)):
                         data += input_string[i] + " "
                     data += "*"
