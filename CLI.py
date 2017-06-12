@@ -119,9 +119,11 @@ class cli:
         print("connecting to mapper " + str(ID))
         if ID == 1:
             self.mapSock1.connect(addr)
+            outgoingTCP["mapper" + str(ID)] = self.mapSock1
         elif ID == 2:
             self.mapSock2.connect(addr)
-        outgoingTCP["mapper" + str(ID)] = s 
+            outgoingTCP["mapper" + str(ID)] = self.mapSock2
+        #outgoingTCP["mapper" + str(ID)] = s 
 
         #receive connection from mapper
         print("cli receiving connection from mapper " + str(ID))
