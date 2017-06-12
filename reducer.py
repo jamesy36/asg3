@@ -12,7 +12,8 @@ def reducer(groupMed, File):
 	#groupMed like group of Medium/intermediate hah
 	words = dict()
 	for files in groupMed:
-	        Files = files.encode('ascii', 'ignore')
+	        Files_star = files.encode('ascii', 'ignore')
+                Files = Files_star.replace("*", "")
 		with open(Files) as f:
                     for line in f.readlines():
                         l = line.split()

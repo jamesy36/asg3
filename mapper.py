@@ -78,7 +78,8 @@ while(True):
 			File = input_string[1]
 			File_strip = File.encode('ascii','ignore')
 			offset = input_string[2]
-			offset_strip = offset.encode('ascii', 'ignore')
+			offset_s = offset.encode('ascii', 'ignore')
+                        offset_strip = offset_s.replace("*", "")
 			size = input_string[3]
 			size_strip = size.encode('ascii', 'ignore')
                         print("MAPPER: File, offset, size:", File_strip, offset_strip, size_strip)
