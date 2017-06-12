@@ -1,6 +1,12 @@
-This 8
-college 5
-an 15
-example 8
-are 18
 school 4
+uzi 3
+This 16
+raindrop 2
+an 30
+lil 2
+college 10
+are 18
+droptop 3
+skrt 5
+example 8
+vert 23
