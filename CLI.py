@@ -108,7 +108,7 @@ class cli:
             print("CLI: mapsock2 not sent, mapFile")
         self.receive(incomingTCP)
 
-    def fileTranslation(File):
+    def fileTranslation(self, File):
         result = ""
         with open(File) as f:
             for line in f.readlines():
