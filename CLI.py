@@ -90,16 +90,19 @@ class cli:
             if c == " ":
                 break
             offset += 1
+            print("CLI: mapfile funct debug", c)
         msg1 = f + " " + "0" + " " + str(offset) + "*" #issue here can't add f and str
         msg2 = f + " " + str(offset) + " " + str(file_size//2) + "*"
         try:
             self.mapSock1.sendall(msg1.encode())
         except error:
             time.sleep(5)
+            print("CLI: mapsock1 not sent, mapFile")
         try:
             self.mapSock2.sendall(msg2.encode())
         except error:
             time.sleep(5)
+            print("CLI: mapsock2 not sent, mapFile")
         receive(incomingTCP)
 
     def fileTranslation(File):
@@ -195,6 +198,7 @@ class cli:
                     self.reducerSock.sendall(files.encode())
                 except error:
                     time.sleep(5)
+                    print("reduce message not passed")
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'print':
@@ -206,6 +210,7 @@ class cli:
                     self.prmSock.sendall("print*".encode())
                 except error:
                     time.sleep(5)
+                    print("CLI: print message not passed")
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'stop':
@@ -217,6 +222,7 @@ class cli:
                     self.prmSock.sendall("stop*".encode())
                 except error:
                     time.sleep(5)
+                    print("CLI: stop message not passed")
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'resume':
@@ -228,6 +234,7 @@ class cli:
                     self.prmSock.sendall("resume*".encode())
                 except error:
                         time.sleep(5)
+                        print("CLI: resume message not passed")
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'merge':
@@ -241,6 +248,7 @@ class cli:
                         self.prmSock.sendall(data.encode())
                     except error:
                         time.sleep(5)
+                        print("CLI: merge message not passed")
                 else:
                     print("Invalid number of args, need 3 args.")
             
@@ -259,6 +267,7 @@ class cli:
                         self.prmSock.sendall(data.encode())
                     except error:
                         time.sleep(5)
+                        print("CLI: total message not passed")
                     self.receive(incomingTCP)  
            
             elif input_string[0] == 'replicate':
@@ -271,6 +280,7 @@ class cli:
                         self.prmSock.sendall(data.encode())
                     except error:
                         time.sleep(5)
+                        print("CLI: replicate message not passed")
                     self.receive(incomingTCP)
                 else:
                     print("Invalid number of args, need 2 args.")

@@ -21,7 +21,7 @@ class PRM(object):
 
 	def _init_(self, index, id ):
 		self.accepts = dict()
-		self.ballotNum = [0,0]
+		self.ballotNum = [None] * 2 
 		self.ackList = [] #we need to keep track of the acks from other siteInfo
 		self.propVal = None #null until a value has been proposed
 		self.acceptBal = [0,0]
