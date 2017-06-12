@@ -113,7 +113,7 @@ class PRM(object):
 		for i in channels.keys():
 			sock = channels.get(i)	
 			ready = select.select([sock], [], [], 1)
-                        print("PRM: ready to receive command")
+                        #print("PRM: ready to receive command")
 			if(ready[0]):
 			        print("PRM: socket ready to receive")
 				data = sock.recv(1024).decode()
