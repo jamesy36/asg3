@@ -163,6 +163,7 @@ class cli:
                     #character "*" used as delimiter for future message processing
            
             if(input_string[0] == "map"):
+                print("CLI: map")
                 if(len(input_string) != 2):
                     print("Invalid number of args, need 2 args")
                     continue
@@ -170,6 +171,7 @@ class cli:
                 self.mapFile(file)
             
             elif(input_string[0] == "reduce"):
+                print("CLI: reduce")
                 if(len(input_string) < 2):
                     print("Invalid number of args, need more than 2 inputs")
                     continue
@@ -181,13 +183,15 @@ class cli:
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'print':
-                    if(len(input_string) != 1):
-                        print("Print")
+                print("CLI: print")
+                if(len(input_string) != 1):
+                    print("Print")
                         continue
-                    self.prmSock.sendall("print*".encode())
-                    self.receive(incomingTCP)
+                self.prmSock.sendall("print*".encode())
+                self.receive(incomingTCP)
             
             elif input_string[0] == 'stop':
+                print("CLI: stop")
                 if(len(input_string) != 1):
                     print("stop")
                     continue
@@ -195,6 +199,7 @@ class cli:
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'resume':
+                print("CLI: resume")
                 if(len(input_string) != 1):
                     print("resume")
                     continue
@@ -202,6 +207,7 @@ class cli:
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'merge':
+                print("CLI: merge")
                 #if correct num of args
                 if len(input_string) == 3:
                     f1 = input_string[1]
@@ -212,6 +218,7 @@ class cli:
                     print("Invalid number of args, need 3 args.")
             
             elif input_string[0] == 'total':
+                print("CLI: total")
                 #if improper number of args
                 if len(input_string) < 2:
                     print("Invalid number of args, need 3 args.")
@@ -225,6 +232,7 @@ class cli:
                     self.receive(incomingTCP)  
            
             elif input_string[0] == 'replicate':
+                print("CLI: replicate")
                 #if correct num of args
                 if len(input_string) == 2:
                     f = input_string[1] #filename

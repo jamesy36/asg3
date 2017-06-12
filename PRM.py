@@ -127,7 +127,7 @@ class PRM(object):
 					print(process)
 					if(process[0].find("resume") != -1):
 						#in case we're rerunning it
-						print("resume")
+                                                print("PRM: resume")
 						stop = False
                                                 log = backupLog[:]
 						for c in outgoingTCP.keys():
@@ -137,7 +137,7 @@ class PRM(object):
 					#WE NEED TO INCLUDE A FAIL SAFE IN CASE self CRASHES
 					#BACKUP self?!?!?!?!!?
 					elif(not process and stop and process[0] == " "):
-						print("error: process has been stopped")
+                                            print("PRM: error: process has been stopped")
                                                 if(stop and (process != 0) and process.find("decide") != -1):
                                                     key = process[1]
                                                     value = process[2]
@@ -145,7 +145,7 @@ class PRM(object):
 						continue
 
 					elif(process[0].find("total") != -1):
-						print("total")
+                                                print("PRM: total")
 						files = []
 						for i in range(1, len(process)):
 							f = log[int(process[i])][1]
@@ -158,7 +158,7 @@ class PRM(object):
 								sock.sendall(result.encode())
 					
 					elif(process[0].find("print") != -1):
-						print("print")
+                                                print("PRM: print")
 						result = self.printFiles(log) 
 						for c in outgoingTCP.keys():
 						    if(c == "cli"):
@@ -166,14 +166,14 @@ class PRM(object):
 						        sock.sendall(result.encode())
 					
 					elif(process[0].find("merge") != -1):
-						print("merge")
+                                                print("PRM: merge")
 						f1 = log[int(process[1])][0]
 						f2 = log[int(process[2])][0]
 						files = [f1, f2]
 						self.merge(files)
 					
 					elif(process[0].find("replicate") != -1):
-						print("replicate")
+                                                print("PRM: replicate")
 						self.ballotNum[0] = 1
 						self.ballotNum[1] = siteNum
 						self.propVal[0] = process[1]
@@ -190,7 +190,7 @@ class PRM(object):
 								sock.sendall(prepSend.encode())
 					
 					elif(process[0].find("stop") != -1):
-						print("stop")
+                                                print("PRM: stop")
 						stop = True
 						for c in outgoingTCP.keys():
 							if(c == "cli"):
@@ -199,7 +199,7 @@ class PRM(object):
 	
 					
 					elif(process[0].find("prepare") != -1):
-						print("prepare")
+                                                print("PRM: prepare")
 						ballot = int(process[1])
 						siteNum = process[2] 
 						#id for the siteNum
@@ -212,7 +212,7 @@ class PRM(object):
 							sock.sendall(prepSend.encode())
 					
 					elif(process[0].find("ack") != -1):
-						print("acknowledge")
+                                                print("PRM: acknowledge")
 						balNum = [process[1], process[2]]
 						acceptBal = [process[3], process[4]]
 						acceptVal = [process[5], process[6]]
@@ -233,10 +233,10 @@ class PRM(object):
 									sock.sendall(prepSend.encode())
 					
 					elif(process.find("accept") != -1):
-					        print("accepted!")
+                                                print("PRM: accepted!")
 						bal = str(process[1]) + str(process[2])
                                                 if(self.accepts[bal] >= 1 and self.leader):
-                                                    print("now deciding value")
+                                                    print("PRM: now deciding value")
                                                     log.append([self.acceptVal[0], self.acceptVal[1]])
                                                     backupLog.append([self.acceptVal[0], self.acceptVal[1]])
                                                     prepSend = "decide" + str(self.acceptVal[0])+" "+str(self.acceptVal[1])
@@ -249,7 +249,7 @@ class PRM(object):
                                                                         prepSend= "Paxos winner is " + str(self.acceptVal[0])
                                                                         sock = outgoingTCP.get(c)
                                                                         sock.sendall(prepSend.encode())
-                                                print("reinitializing paxos ballot values")
+                                                print("PRM: reinitializing paxos ballot values")
                                                 self.reinit()
                                                 accepts.clear()
 
@@ -322,7 +322,7 @@ server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 
 siteNum = sys.argv[1]
 setup = sys.argv[2]
-print("Esablishing connection!")
+print("PRM: Esablishing connection!")
 with open(setup) as f:
 	numSites = f.readline().strip() 
 	for i in range(int(numSites)):
@@ -348,7 +348,7 @@ with open(setup) as f:
                         while run:
 			    try:
 		            	s.connect(addr)
-				print("Connected to ", nums[1])
+                                print("PRM: Connected to ", nums[1])
 				run = False
 			    except error:
 			    	time.sleep(5)
@@ -382,7 +382,7 @@ while keep_going:
 outgoingTCP["cli"] = s
 #print(outgoingTCP)
 
-print("Ready for commands")
+print("PRM: Ready for commands")
 while(True):
     test.receive(incomingTCP)
     #time.sleep(1)
