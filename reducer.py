@@ -14,8 +14,8 @@ def reducer(groupMed, file):
 	for files in groupMed:
 		with open(files) as f:
                     for line in f.readlines():
-			word = currentLine[0]
-			counter = int(currentLine[1])
+			word = line[0]
+			counter = int(line[1])
 			if(word in words.keys()):
 				oldCounter = words.get(word)
 				newCounter = int(oldCounter + counter)
