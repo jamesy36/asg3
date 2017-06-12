@@ -84,11 +84,11 @@ class PRM(object):
 				word = result[i]
 				counter = int(result[i+1])
 				if(word in words.keys()):
-						oldCount = words.get(word)
-						newCount = int(oldCount + count)
-						words[word] = newCount
-					else:
-						words[word] = count
+					oldCount = words.get(word)
+					newCount = int(oldCount + count)
+					words[word] = newCount
+				else:
+					words[word] = count
 		print(words)
 		return words
 
