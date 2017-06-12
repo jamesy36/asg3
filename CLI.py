@@ -200,7 +200,7 @@ class cli:
                     self.reducerSock.sendall(files.encode())
                 except error:
                     time.sleep(5)
-                    print("reduce message not passed")
+                    print("reduce message not passed|||", error)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'print':
@@ -212,7 +212,7 @@ class cli:
                     self.prmSock.sendall("print*".encode())
                 except error:
                     time.sleep(5)
-                    print("CLI: print message not passed")
+                    print("CLI: print message not passed|||", error)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'stop':
@@ -224,7 +224,7 @@ class cli:
                     self.prmSock.sendall("stop*".encode())
                 except error:
                     time.sleep(5)
-                    print("CLI: stop message not passed")
+                    print("CLI: stop message not passed|||", error)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'resume':
@@ -236,7 +236,7 @@ class cli:
                     self.prmSock.sendall("resume*".encode())
                 except error:
                         time.sleep(5)
-                        print("CLI: resume message not passed")
+                        print("CLI: resume message not passed|||", error)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'merge':
@@ -250,7 +250,7 @@ class cli:
                         self.prmSock.sendall(data.encode())
                     except error:
                         time.sleep(5)
-                        print("CLI: merge message not passed")
+                        print("CLI: merge message not passed|||", error)
                 else:
                     print("Invalid number of args, need 3 args.")
             
@@ -269,7 +269,7 @@ class cli:
                         self.prmSock.sendall(data.encode())
                     except error:
                         time.sleep(5)
-                        print("CLI: total message not passed")
+                        print("CLI: total message not passed|||", error)
                     self.receive(incomingTCP)  
            
             elif input_string[0] == 'replicate':
@@ -282,7 +282,7 @@ class cli:
                         self.prmSock.sendall(data.encode())
                     except error:
                         time.sleep(5)
-                        print("CLI: replicate message not passed")
+                        print("CLI: replicate message not passed|||", error)
                     self.receive(incomingTCP)
                 else:
                     print("Invalid number of args, need 2 args.")

@@ -117,8 +117,10 @@ class PRM(object):
 			if(ready[0]):
 			        #print("PRM: socket ready to receive")
 				data = sock.recv(1024).decode()
-                                while(data[-1] != '*'):
-                                    data += sock.recv(1024).decode()
+                                print("PRM: recv data::", data)
+                                if(data):
+                                    while(data[-1] != '*'):
+                                        data += sock.recv(1024).decode()
 				#print(data)
 				#above to help with debug
 				splitData = data.split("*")

@@ -23,7 +23,7 @@ def reducer(groupMed, File):
 				newCounter = int(oldCounter + counter)
 				words[word] = newCounter
 			else:
-				words[word] = count
+				words[word] = counter
 
 
 	temp = File.split("_")[0]	
