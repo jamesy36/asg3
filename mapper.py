@@ -12,7 +12,7 @@ def mapper(File, offset, size):
 	#create dictionary to hold words from file
 	temp = ""
 	#create a temp empty string to hold what's being read into it
-	f = open(fname, "r")
+	f = open(File, "r")
 	f.seek(offset)
 	#read file for chracters that fit the given size, and store in temp
 	for i in range(size):
@@ -31,7 +31,8 @@ def mapper(File, offset, size):
 		else:
 			words[keywords] = 1
 
-	result = open(File, + "_I_" + uniqueid, "w")
+	new_File = str(File) + "_I_" + str(uniqueid)
+	result = open(new_File, "w")
 	for i in words.keys():
 		result.write(str(i))
 		result.write(" ")
@@ -83,8 +84,11 @@ while(True):
                         #offset_strip = offset_s.replace("*", "")
 			size = input_string[3]
 			size_strip = size.encode('ascii', 'ignore')
-                        print("MAPPER: File, offset, size:", File_strip, offset_strip, size_strip)
-			mapper(File_strip, int(offset_strip), int(size_strip))
+                        print("MAPPER: File, offset, size:", File_strip, offset_s, size_strip)
+			mapper(File_strip, int(offset_s), int(size_strip))
 			send = "Mapper done"
 			sock.sendall(send.encode()) 
+
+
+
 
