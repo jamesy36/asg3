@@ -83,8 +83,8 @@ while(True):
                         #offset_strip = offset_s.replace("*", "")
 			size = input_string[3]
 			size_strip = size.encode('ascii', 'ignore')
-                        print("MAPPER: File, offset, size:", File_strip, offset_strip, size_strip)
-			mapper(File_strip, int(offset_strip), int(size_strip))
+                        print("MAPPER: File, offset, size:", File_strip, offset_s, size_strip)
+			mapper(File_strip, int(offset_s), int(size_strip))
 			send = "Mapper done"
 			sock.sendall(send.encode()) 
 
