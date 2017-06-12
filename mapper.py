@@ -12,7 +12,7 @@ def mapper(File, offset, size):
 	#create dictionary to hold words from file
 	temp = ""
 	#create a temp empty string to hold what's being read into it
-	f = open(fname, "r")
+	f = open(File, "r")
 	f.seek(offset)
 	#read file for chracters that fit the given size, and store in temp
 	for i in range(size):
