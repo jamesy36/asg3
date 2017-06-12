@@ -80,3 +80,6 @@ while(True):
 			    f = input_string[i]
 			    groupMed.append(f)
 			reducer(groupMed, File)
+			result = outgoingTCP[0]
+			prepSend = "Reducer done. "
+			result.sendall(prepSend.encode())

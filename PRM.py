@@ -46,13 +46,10 @@ class PRM(object):
 	def total(files):
 		total = 0
 		for filename in files:
-			with open(filename) as f:
-				for line in f.readlines():
-					with open(filename) as f:
-						for line in f.readlines():
-							currentLine = line.split()
-							counter = int(currentLine[1])
-							total += counter
+			result = filename.split()
+			for i in range(0, len(result), 2):
+				total += int(result[i+1])
+		print(total)
 		return total
 
 	def printPax(self):
@@ -82,12 +79,11 @@ class PRM(object):
 	def merge(input_string):
 		words = dict()
 		for filename in input_string:
-			with open(filename) as f:
-				for line in f.readlines():
-					currentLine = line.split()
-					word = currentline[0]
-					count = int(currentLine[1])
-					if(word in words.keys()):
+			result = filename.split()
+			for i in range(0,len(result),2):
+				word = result[i]
+				counter = int(result[i+1])
+				if(word in words.keys()):
 						oldCount = words.get(word)
 						newCount = int(oldCount + count)
 						words[word] = newCount
@@ -132,10 +128,9 @@ class PRM(object):
 			if(ready[0]):
 			        #print("PRM: socket ready to receive")
 				data = sock.recv(1024).decode()
-                                while(data[-1] != '*'):
-                                    data += sock.recv(1024).decode()
-				#print(data)
-				#above to help with debug
+				while(data[-1] != '*'):
+					data += sock.recv(1024).decode()               
+				print(data)
 				splitData = data.split("*")
 				#if(splitData[0] != " "):
 					#sys.stdout.write("commands or processes:")
@@ -143,12 +138,12 @@ class PRM(object):
 				for data in range(0 , len(splitData) - 1):
 					process = splitData[data].split()
 					sys.stdout.write("processes:")
-                                        print("PRM: ", process[0])
+                    print("PRM: ", process[0])
 					if(process[0].find("resume") != -1):
 						#in case we're rerunning it
-                                                print("PRM: resume")
+                       	print("PRM: resume")
 						stop = False
-                                                log = backupLog[:]
+                        log = backupLog[:]
 						for c in outgoingTCP.keys():
 							if(c == "cli"):
 								sock = outgoingTCP.get(c)
@@ -156,15 +151,15 @@ class PRM(object):
 					#WE NEED TO INCLUDE A FAIL SAFE IN CASE self CRASHES
 					#BACKUP self?!?!?!?!!?
 					elif(not process and stop and process[0] == " "):
-                                                print("PRM: error: process has been stopped")
-                                                if(stop and (process != 0) and process.find("decide") != -1):
-                                                    key = process[1]
-                                                    value = process[2]
-                                                    backupLog.append([key, value])
+         				print("PRM: error: process has been stopped")
+         				if(stop and (process != 0) and process.find("decide") != -1):
+                      		key = process[1]
+                         	value = process[2]
+                      		backupLog.append([key, value])                                   
 						continue
 
 					elif(process[0].find("total") != -1):
-                                                print("PRM: total")
+      					print("PRM: total")
 						files = []
 						for i in range(1, len(process)):
 							f = log[int(process[i])][1]
@@ -177,7 +172,7 @@ class PRM(object):
 								sock.sendall(result.encode())
 					
 					elif(process[0].find("print") != -1):
-                                                print("PRM: print")
+                     	print("PRM: print")
 						result = self.printFiles(log) 
 						for c in outgoingTCP.keys():
 						    if(c == "cli"):
@@ -185,22 +180,22 @@ class PRM(object):
 						        sock.sendall(result.encode())
 					
 					elif(process[0].find("merge") != -1):
-                                                print("PRM: merge")
+                     	print("PRM: merge")
 						f1 = log[int(process[1])][0]
 						f2 = log[int(process[2])][0]
 						files = [f1, f2]
 						self.merge(files)
 					
 					elif(process[0].find("replicate") != -1):
-                                                print("PRM: replicate")
+                       	print("PRM: replicate")
 						self.ballotNum[0] = 1
 						self.ballotNum[1] = siteNum
 						self.propVal[0] = process[1]
 						propList = " "
-                                                for i in range(2, len(input_string)):
-                                                    propList+=input_string[i]
-                                                    propList+=" "
-                                                self.propVal[1] = propList
+                        for i in range(2, len(input_string)):
+                        	propList+=input_string[i]
+                         	propList+=" "
+               			self.propVal[1] = propList
 						self.leader = True
 						prepSend = "prepare" + str(self.ballotNum[0]) + " " + str(self.balltNum[1]) + "*"
 						for c in outgoingTCP.keys():
@@ -209,7 +204,7 @@ class PRM(object):
 								sock.sendall(prepSend.encode())
 					
 					elif(process[0].find("stop") != -1):
-                                                print("PRM: stop")
+                       	print("PRM: stop")
 						stop = True
 						for c in outgoingTCP.keys():
 							if(c == "cli"):
@@ -218,20 +213,20 @@ class PRM(object):
 	
 					
 					elif(process[0].find("prepare") != -1):
-                                                print("PRM: prepare")
+                     	print("PRM: prepare")
 						ballot = int(process[1])
 						siteNum = process[2] 
 						#id for the siteNum
 						
-						if(self.ballotNum[0] < ballot or (self.ballotNum[0] == ballot and self.ballotNum[1] < int(siteNum))):
+						if(self.ballotNum[0] < ballot or (int(self.ballotNum[0]) == ballot and int(self.ballotNum[1]) < int(siteNum))):
 							self.ballotNum[0] = ballot 
 							self.ballotNum[1] = siteNum
-							prepSend = "ack" + str(self.ballotNum[0]) + " " + str(self.ballotNum[1])
+							prepSend = "ack" + str(self.ballotNum[0]) + " " + str(self.ballotNum[1]) + " " + str(self.acceptBal[0]) + " " + str(self.acceptBal[1]) + " " + self.acceptVal[0] + " " + self.accept[1] + " " + siteNum + "*"
 							sock = outgoingTCP.get(siteNum)
 							sock.sendall(prepSend.encode())
 					
 					elif(process[0].find("ack") != -1):
-                                                print("PRM: acknowledge")
+                      	print("PRM: acknowledge")
 						balNum = [process[1], process[2]]
 						acceptBal = [process[3], process[4]]
 						acceptVal = [process[5], process[6]]
@@ -252,83 +247,85 @@ class PRM(object):
 									sock.sendall(prepSend.encode())
 					
 					elif(process.find("accept") != -1):
-                                                print("PRM: accepted!")
+                        print("PRM: accepted!")
 						bal = str(process[1]) + str(process[2])
-                                                if(self.accepts[bal] >= 1 and self.leader):
-                                                    print("PRM: now deciding value")
-                                                    log.append([self.acceptVal[0], self.acceptVal[1]])
-                                                    backupLog.append([self.acceptVal[0], self.acceptVal[1]])
-                                                    prepSend = "decide" + str(self.acceptVal[0])+" "+str(self.acceptVal[1])
-						for c in outgoingTCP.keys():
+                       	
+                       	if(self.accepts[bal] >= 1 and self.leader):
+                            print("PRM: now deciding value")
+                            log.append([self.acceptVal[0], self.acceptVal[1]])
+                            backupLog.append([self.acceptVal[0], self.acceptVal[1]])
+                            prepSend = "decide" + str(self.acceptVal[0])+" "+str(self.acceptVal[1])
+							for c in outgoingTCP.keys():
 								if(c != "cli"):
 									sock = outgoingTCP.get(c)
 									sock.sendall(prepSend.encode())
-								else:
+								for c in outgoingTCP.keys():
+									if(c == "cli"):
 								        time.sleep(1)
-                                                                        prepSend= "Paxos winner is " + str(self.acceptVal[0])
-                                                                        sock = outgoingTCP.get(c)
-                                                                        sock.sendall(prepSend.encode())
-                                                print("PRM: reinitializing paxos ballot values")
-                                                self.reinit()
-                                                accepts.clear()
+                                        prepSend= "Paxos winner is " + str(self.acceptVal[0])
+                                        sock = outgoingTCP.get(c)
+                                        sock.sendall(prepSend.encode())
+                                print("PRM: reinitializing paxos ballot values")
+                                self.reinit()
+                                accepts.clear()
 
-                                                for c in incomingTCP.keys():
-                                                    sock = channels.get(c)
-                                                    ready = select.select([sock], [], [], 1)
-                                                    if(ready[0]):
-                                                        data=sock.recv(1024).decode()
-                                                return
-                                        elif(int(self.ballotNum[0]) < int(process[1]) or (int(self.ballotNum[0]) == int(process[1]) and int(self.ballotNum[1]) <= int(process[2]))):
-                                                propList = ""
-                                                for i in range(4, len(process)):
-                                                    propList+=process(i)
-                                                    proplist+= " "
-                                                self.ballotNum[0] = int(process[1])
-                                                self.ballotNum[1] = int(process[2])
-                                                self.acceptBal[0] = int(process[1])
-                                                self.acceptBal[1] = int(process[2])
-                                                acceptVal = [process[3], propList]
-                                                self.acceptVal = acceptVal[:]
-                                                self.leader = False
-                                                if(bal in accepts):
-                                                    accepts[bal] += 1
-                                                    print("accepts have been incremented")
-                                                else:
-                                                    accepts[bal] = 1
-                                                    print("accepts is 1")
-                                                    prepSend = "accept" + str(process[1]) + " " + str(process[2]) + " " + str(process[3]) + " " + propList + "*"
-                                                    for c in outgoingTCP.keys():
-                                                        if(c != "cli"):
-                                                            sock = outgoingTCP.get(c)
-                                                            sock.sendall(prepSend.encode())
+                              	for c in incomingTCP.keys():
+	                                sock = channels.get(c)
+	                                ready = select.select([sock], [], [], 1)
+	                                if(ready[0]):
+	                                    data=sock.recv(1024).decode()
+	                            return
+		                elif(int(self.ballotNum[0]) < int(process[1]) or (int(self.ballotNum[0]) == int(process[1]) and int(self.ballotNum[1]) <= int(process[2]))):
+	                        propList = ""
+	                        for i in range(4, len(process)):
+	                            propList+=process(i)
+	                            proplist+= " "
+	                        self.ballotNum[0] = int(process[1])
+	                        self.ballotNum[1] = int(process[2])
+	                        self.acceptBal[0] = int(process[1])
+	                        self.acceptBal[1] = int(process[2])
+	                        acceptVal = [process[3], propList]
+	                        self.acceptVal = acceptVal[:]
+	                        self.leader = False
+	                        if(bal in accepts):
+	                            accepts[bal] += 1
+	                            print("accepts have been incremented")
+	                        else:
+	                            accepts[bal] = 1
+	                            print("accepts is 1")
+	                            prepSend = "accept" + str(process[1]) + " " + str(process[2]) + " " + str(process[3]) + " " + propList + "*"
+	                            for c in outgoingTCP.keys():
+	                                if(c != "cli"):
+	                                    sock = outgoingTCP.get(c)
+	                                    sock.sendall(prepSend.encode())
 
 											
 					elif(process[0].find("decide") != -1):
-					        propList = ""
-                                                for i in range(2, len(process)):
-                                                    propList += process[1]
-                                                    propList += " "
+						propList = ""
+                        for i in range(2, len(process)):
+                            propList += process[1]
+                            propList += " "
 						acceptVal = [process[1], process[2]]
 						log.append(acceptVal)
 						backupLog.append(acceptVal)
 						accepts.clear()
 						self.printPax()
-                                                sys.stdout.write("printing PRM's log: ")
-                                                print(log)
-                                                for c in outgoingTCP.keys():
-                                                    if(c == "cli" and self.propVal[0] != None):
-                                                        time.sleep(2)
-                                                        prepSend = "Winner paxos value is " + str(process[1])
-                                                        sock = outgoingTCP.get(c)
-                                                        sock.sendall(prepare.encode())
-                                                self.reinit()
-                                                for c in incomingTCP.keys():
-                                                    sock = channels.get(c)
-                                                    ready = select.select([sock], [], [], 1)
-                                                    if(ready[0]):
-                                                        data = sock.recv(1024).decode()
-                                                return
-    					else:
+                        sys.stdout.write("printing PRM's log: ")
+                        print(log)
+                        for c in outgoingTCP.keys():
+                            if(c == "cli" and self.propVal[0] != None):
+                                time.sleep(2)
+                                prepSend = "Winner paxos value is " + str(process[1])
+                                sock = outgoingTCP.get(c)
+                                sock.sendall(prepare.encode())
+                        self.reinit()
+                        for c in incomingTCP.keys():
+                            sock = channels.get(c)
+                            ready = select.select([sock], [], [], 1)
+                            if(ready[0]):
+                                data = sock.recv(1024).decode()
+                        return
+    				else:
 						continue
 			return
 
