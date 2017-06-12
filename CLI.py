@@ -28,6 +28,7 @@ class cli:
     def __init__(self):
        #needs to be able to determine how many sockets there will be
        #needs to keep track of prm sockets
+       self.stop_comm = True 
        self.socket_to_map = None
        self.socket_to_reduce = None
        self.prmSock = socket(AF_INET, SOCK_STREAM)
@@ -93,8 +94,8 @@ class cli:
             offset += 1
             print("CLI: mapfile funct debug", c)
         '''
-        msg1 ="map " + str(File) + " " + "0" + " " + str(offset) + "*" #issue here can't add f and str
-        msg2 = "map " + str(File) + " " + str(offset) + " " + str(file_size//2) + "*"
+        msg1 ="map " + str(File) + " " + "0" + " " + str(offset) + "*"
+        msg2 = "map " + str(File) + " " + str(offset) + " " + str(fileSize//2) + "*"
         try:
             self.mapSock1.sendall(msg1.encode())
         except error:
@@ -105,7 +106,7 @@ class cli:
         except error:
             time.sleep(5)
             print("CLI: mapsock2 not sent, mapFile")
-        receive(incomingTCP)
+        self.receive(incomingTCP)
 
     def fileTranslation(File):
         result = ""
@@ -194,13 +195,14 @@ class cli:
                     continue
                 files = "reduce"
                 for i in range(1, len(input_string)):
-                    files += input_string[i] + " "
+                    files += " " + input_string[i]
                 files += "*"
                 try:
                     self.reducerSock.sendall(files.encode())
                 except error:
                     time.sleep(5)
-                    print("reduce message not passed")
+                    print("reduce message not passed|||", error)
+                print("CLI: msg to reducer::", files)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'print':
@@ -212,7 +214,7 @@ class cli:
                     self.prmSock.sendall("print*".encode())
                 except error:
                     time.sleep(5)
-                    print("CLI: print message not passed")
+                    print("CLI: print message not passed|||", error)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'stop':
@@ -224,7 +226,7 @@ class cli:
                     self.prmSock.sendall("stop*".encode())
                 except error:
                     time.sleep(5)
-                    print("CLI: stop message not passed")
+                    print("CLI: stop message not passed|||", error)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'resume':
@@ -236,7 +238,7 @@ class cli:
                     self.prmSock.sendall("resume*".encode())
                 except error:
                         time.sleep(5)
-                        print("CLI: resume message not passed")
+                        print("CLI: resume message not passed|||", error)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'merge':
@@ -250,7 +252,7 @@ class cli:
                         self.prmSock.sendall(data.encode())
                     except error:
                         time.sleep(5)
-                        print("CLI: merge message not passed")
+                        print("CLI: merge message not passed|||", error)
                 else:
                     print("Invalid number of args, need 3 args.")
             
@@ -269,7 +271,7 @@ class cli:
                         self.prmSock.sendall(data.encode())
                     except error:
                         time.sleep(5)
-                        print("CLI: total message not passed")
+                        print("CLI: total message not passed|||", error)
                     self.receive(incomingTCP)  
            
             elif input_string[0] == 'replicate':
@@ -277,19 +279,19 @@ class cli:
                 #if correct num of args
                 if len(input_string) == 2:
                     f = input_string[1] #filename
-                    file = fileTranslation(f)
                     data = "replicate" + input_string[1] + "*"
                     try:
                         self.prmSock.sendall(data.encode())
                     except error:
                         time.sleep(5)
-                        print("CLI: replicate message not passed")
+                        print("CLI: replicate message not passed|||", error)
                     self.receive(incomingTCP)
                 else:
                     print("Invalid number of args, need 2 args.")
 
             elif input_string[0] == 'exit':
                 cont = False
+                self.stop_comm = False
             
             else:
                 print("no matching command found.")
@@ -310,6 +312,6 @@ print("Outgoing TCP: ", outgoingTCP)
 print("-----------------------")
 print("Incoming TCP: ", incomingTCP)
 print("-----------------------")
-while True:
+while test.stop_comm:
     test.commands()
 print("done")

@@ -4,7 +4,6 @@ from socket import *
 import time
 import select
 
-
 incomingTCP = []
 outgoingTCP = []
 
@@ -72,16 +71,20 @@ while(True):
 	if(not process):
 		continue
 	else:
-		input_string = data.split()
+		input_string_star = process.split("*")
+                input_string = input_string_star[0].split()
 		#command, check to see if its map
 		if(input_string[0].find("map") != -1):
 			#if it is the correct command, call the mapper function
 			File = input_string[1]
-			offset = int(input_string[2])
-			size = int(input_string[3])
-			mapper(File, offset, size)
-
-
-
-
+			File_strip = File.encode('ascii','ignore')
+			offset = input_string[2]
+			offset_s = offset.encode('ascii', 'ignore')
+                        #offset_strip = offset_s.replace("*", "")
+			size = input_string[3]
+			size_strip = size.encode('ascii', 'ignore')
+                        print("MAPPER: File, offset, size:", File_strip, offset_strip, size_strip)
+			mapper(File_strip, int(offset_strip), int(size_strip))
+			send = "Mapper done"
+			sock.sendall(send.encode()) 
 

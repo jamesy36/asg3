@@ -12,7 +12,9 @@ def reducer(groupMed, File):
 	#groupMed like group of Medium/intermediate hah
 	words = dict()
 	for files in groupMed:
-		with open(files) as f:
+	        Files_star = files.encode('ascii', 'ignore')
+                Files = Files_star.replace("*", "")
+		with open(Files) as f:
                     for line in f.readlines():
                         l = line.split()
 			word = l[0]
@@ -23,7 +25,7 @@ def reducer(groupMed, File):
 				newCounter = int(oldCounter + counter)
 				words[word] = newCounter
 			else:
-				words[word] = count
+				words[word] = counter
 
 
 	temp = File.split("_")[0]	
@@ -66,20 +68,22 @@ print("Reducer successfully connected to CLI")
 while(True):
 	#waiting for command
 	process = connection.recv(1024).decode()
-        print("REDUCER: ", process)
+        #print("REDUCER: ", process)
 	if(not process):
 		continue
 	else:
-		groupMed = []
+		g = []
 		input_string = process.split()
 		#command, check to see if its map
 		if(input_string[0].find("reduce") != -1):
 			#if it is the correct command, call the mapper function
 			File = input_string[1]
+                        print("REDUCER: ", File)
 			for i in range(1, len(input_string)):
 			    f = input_string[i]
-			    groupMed.append(f)
-			reducer(groupMed, File)
-			result = outgoingTCP[0]
-			prepSend = "Reducer done. "
-			result.sendall(prepSend.encode())
+			    g.append(f)
+			print("REDUCER: g line 83:", g)
+			reducer(g, File)
+			Ssock = outgoingTCP[0]
+			send = "Reducer finished"
+			Ssock.sendall(send.encode())
