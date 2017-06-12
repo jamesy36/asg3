@@ -82,15 +82,15 @@ class cli:
         if(fileSize%2 == 0):
             offset = fileSize//2
         else:
-            offset = fileSize - (offset + fileSize//2)
-        file = open(file)
+            offset = fileSize - fileSize//2
+        f = open(file)
         while(True):
-            c = file.read(1)
+            c = f.read(1)
             if c == " ":
                 break
             offset += 1
-        msg1 = file + " " + "0" + " " + str(offset) + "*"
-        msg2 = file + " " + str(offset) + " " + str(file_size//2) + "*"
+        msg1 = f + " " + "0" + " " + str(offset) + "*"
+        msg2 = f + " " + str(offset) + " " + str(file_size//2) + "*"
         mapSock1.sendall(msg1.encode())
         mapSock2.sendall(msg2.encode())
         receive(incomingTCP)
