@@ -31,7 +31,8 @@ def mapper(File, offset, size):
 		else:
 			words[keywords] = 1
 
-	result = open(str(File), + "_I_" + str(uniqueid), "w")
+	new_File = str(File) + "_I_" + str(uniqueid)
+	result = open(new_File, "w")
 	for i in words.keys():
 		result.write(str(i))
 		result.write(" ")
