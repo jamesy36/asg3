@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 import sys
 from socket import * 
+from string import maketrans
 import time
 import select
 
+intab = "u*'"
+outtab = "   "
+trantab = maketrans(intab, outtab)
 
 incomingTCP = []
 outgoingTCP = []
@@ -77,13 +81,16 @@ while(True):
 		if(input_string[0].find("map") != -1):
 			#if it is the correct command, call the mapper function
 			File = input_string[1]
-			File_strip = File.translate(None, '*')
+			File_translate = File.translate(trantab, ' ')
+			File_strip = File_translate.strip()
 			offset = input_string[2]
-			offset_strip = offset.translate(None, '*')
+			offset_translate = offset.translate(trantab, ' ')
+                        offset_strip = File_translate.strip()
 			size = input_string[3]
-			size_strip = size.translate(None, '*')
-                        print("MAPPER: File, offset, size:", File, offset, size)
-			mapper(File, int(offset), int(size))
+			size_translate = size.translate(trantab, ' ')
+			size_strip = File_translate.strip()
+                        print("MAPPER: File, offset, size:", File_strip, offset_strip, size_strip)
+			mapper(File_strip, int(offset_strip), int(size_strip))
 			send = "Mapper done"
 			sock.sendall(send.encode()) 
 

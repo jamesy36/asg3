@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 import sys
 from socket import * 
+from string import maketrans
 import time
 import select
 
+intab = "*u'"
+outtab = "   "
+trantab = maketrans(intab, outtab)
 
 incomingTCP = []
 outgoingTCP = []
@@ -12,7 +16,9 @@ def reducer(groupMed, File):
 	#groupMed like group of Medium/intermediate hah
 	words = dict()
 	for files in groupMed:
-		with open(files) as f:
+	        files_t = files.translate(trantab, " ")
+	        files_strip = files_t.strip()
+		with open(files_strip) as f:
                     for line in f.readlines():
                         l = line.split()
 			word = l[0]
