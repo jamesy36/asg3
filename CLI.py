@@ -69,22 +69,22 @@ class cli:
         print("cli received connection from prm")
 
 
-    def getSize(self, file):
+    def getSize(self, File):
         #this helper gets you the file size
-        size = os.stat(file)
+        size = os.stat(File)
         return size.st_size
 
 
-    def mapFile(self, file):
+    def mapFile(self, File):
         #I realized that the mapper function needed a helper to find offset, and params
         #UPDATE: I realized that its a better a helper for the whole cmd
-        fileSize = self.getSize(file)
+        fileSize = self.getSize(File)
         #integer division 
         if(fileSize%2 == 0):
             offset = fileSize//2
         else:
             offset = fileSize - fileSize//2
-        f = open(file)
+        f = open(File)
         while(True):
             c = f.read(1)
             if c == " ":
@@ -94,17 +94,17 @@ class cli:
         msg2 = f + " " + str(offset) + " " + str(file_size//2) + "*"
         try:
             self.mapSock1.sendall(msg1.encode())
-        except socket.error:
+        except error:
             time.sleep(5)
         try:
             self.mapSock2.sendall(msg2.encode())
-        except socket.error:
+        except error:
             time.sleep(5)
         receive(incomingTCP)
 
-    def fileTranslation(file):
+    def fileTranslation(File):
         result = ""
-        with open(file) as f:
+        with open(File) as f:
             for line in f.readlines():
                 current = line.split()
                 result += current[0] + " " + current[1] + " "
@@ -179,8 +179,8 @@ class cli:
                 if(len(input_string) != 2):
                     print("Invalid number of args, need 2 args")
                     continue
-                file = input_string[1]
-                self.mapFile(file)
+                File = input_string[1]
+                self.mapFile(File)
             
             elif(input_string[0] == "reduce"):
                 print("CLI: reduce")
@@ -193,7 +193,7 @@ class cli:
                 files += "*"
                 try:
                     self.reducerSock.sendall(files.encode())
-                except socket.error:
+                except error:
                     time.sleep(5)
                 self.receive(incomingTCP)
             
@@ -204,7 +204,7 @@ class cli:
                     continue
                 try:
                     self.prmSock.sendall("print*".encode())
-                except socket.error:
+                except error:
                     time.sleep(5)
                 self.receive(incomingTCP)
             
@@ -215,7 +215,7 @@ class cli:
                     continue
                 try:
                     self.prmSock.sendall("stop*".encode())
-                except socket.error:
+                except error:
                     time.sleep(5)
                 self.receive(incomingTCP)
             
@@ -226,7 +226,7 @@ class cli:
                     continue
                 try:
                     self.prmSock.sendall("resume*".encode())
-                except socket.error:
+                except error:
                         time.sleep(5)
                 self.receive(incomingTCP)
             
@@ -239,7 +239,7 @@ class cli:
                     data = "merge" + f1 + " " + f2 + "*"
                     try:
                         self.prmSock.sendall(data.encode())
-                    except socket.error:
+                    except error:
                         time.sleep(5)
                 else:
                     print("Invalid number of args, need 3 args.")
@@ -257,7 +257,7 @@ class cli:
                     data += "*"
                     try:
                         self.prmSock.sendall(data.encode())
-                    except socket.error:
+                    except error:
                         time.sleep(5)
                     self.receive(incomingTCP)  
            
@@ -269,7 +269,7 @@ class cli:
                     data = "replicate" + input_string[1] + "*"
                     try:
                         self.prmSock.sendall(data.encode())
-                    except socket.error:
+                    except error:
                         time.sleep(5)
                     self.receive(incomingTCP)
                 else:
