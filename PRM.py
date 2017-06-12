@@ -364,7 +364,7 @@ class PRM(object):
 
 
 test = PRM()
-print ('PRM: testing initializer ', test.numVotes)
+#print ('PRM: testing initializer ', test.numVotes)
 
 # Create the server
 
