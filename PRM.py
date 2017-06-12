@@ -150,7 +150,7 @@ class PRM(object):
 						for i in range(1, len(process)):
 							f = log[int(process[i])][1]
 							files.append(f)
-						result = str(total(files))
+						result = str(self.total(files))
 						for c in outgoingTCP.keys():
 							if(c == "cli"):
 								print("cli key!")
@@ -159,7 +159,7 @@ class PRM(object):
 					
 					elif(process[0].find("print") != -1):
 						print("print")
-						result = printFiles(log) 
+						result = self.printFiles(log) 
 						for c in outgoingTCP.keys():
 						    if(c == "cli"):
 						        sock = outgoingTCP.get(c)
@@ -170,7 +170,7 @@ class PRM(object):
 						f1 = log[int(process[1])][0]
 						f2 = log[int(process[2])][0]
 						files = [f1, f2]
-						merge(files)
+						self.merge(files)
 					
 					elif(process[0].find("replicate") != -1):
 						print("replicate")
@@ -221,7 +221,7 @@ class PRM(object):
 						self.acklist.append(thisAck)
 						if(len(self.ackList) + 1 >= 2):
 							#if majority of acks
-							if(acknowledgeCheck(self.ackList)):
+							if(self.acknowledgeCheck(self.ackList)):
 								#if yes and there is a value
 								self.acceptVal = highestBallot(self.ackList)[:]
 							else:

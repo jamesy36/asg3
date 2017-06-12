@@ -32,7 +32,7 @@ class cli:
        self.socket_to_reduce = None
        self.prmSock = socket(AF_INET, SOCK_STREAM)
        self.mapSock = None
-       self.reducerSock = None
+       self.reducerSock = socket(AF_INET, SOCK_STREAM) 
        self.mapsockets = []
        self.server = socket(AF_INET, SOCK_STREAM)
        self.server.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -121,11 +121,11 @@ class cli:
         print("cli has connect with mapper" + str(ID) )
 
     def reducerConnect(self, port):
-        reducerSock = socket(AF_INET, SOCK_STREAM)
+        self.reducerSock = socket(AF_INET, SOCK_STREAM)
         addr = (self.ip, int(port))
         print("connecting to reducer")
-        reducerSock.connect(addr)
-        outgoingTCP["reducer"] = reducerSock
+        self.reducerSock.connect(addr)
+        outgoingTCP["reducer"] = self.reducerSock
         print("cli connected to reducer")
 
         #receive connection from reducer
@@ -163,8 +163,8 @@ class cli:
                     #character "*" used as delimiter for future message processing
            
             if(input_string[0] == "map"):
-                if(len(input_string) != 4):
-                    print("Invalid number of args, need 3 args")
+                if(len(input_string) != 2):
+                    print("Invalid number of args, need 2 args")
                     continue
                 file = input_string[1]
                 self.mapFile(file)
@@ -177,7 +177,7 @@ class cli:
                 for i in range(1, len(input_string)):
                     files += input_string[i] + " "
                 files += "*"
-                reducerSock.sendall(files.encode())
+                self.reducerSock.sendall(files.encode())
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'print':
@@ -256,5 +256,6 @@ print("Outgoing TCP: ", outgoingTCP)
 print("-----------------------")
 print("Incoming TCP: ", incomingTCP)
 print("-----------------------")
-test.commands()
+while True:
+    test.commands()
 print("done")
