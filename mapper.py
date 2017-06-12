@@ -72,7 +72,7 @@ while(True):
 		continue
 	else:
 		input_string_star = process.split("*")
-                input_string = input_string_star.split()
+                input_string = input_string_star[0].split()
 		#command, check to see if its map
 		if(input_string[0].find("map") != -1):
 			#if it is the correct command, call the mapper function
