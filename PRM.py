@@ -30,7 +30,6 @@ class PRM(object):
 	    self.acceptVal = None #null until a value has been accepted 
 	    self.id = id
 	    self.p = 0
-	    print("PRM: init'd")
 
 	def reinit():
 		self.accepts.clear()
@@ -321,6 +320,7 @@ class PRM(object):
 
 
 test = PRM()
+print("PRM: testing initializer ", test.numVotes)
 
 #Create the server
 port = 5005

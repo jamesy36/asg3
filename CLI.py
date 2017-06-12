@@ -312,6 +312,6 @@ print("Outgoing TCP: ", outgoingTCP)
 print("-----------------------")
 print("Incoming TCP: ", incomingTCP)
 print("-----------------------")
-while self.stop_comm:
+while test.stop_comm:
     test.commands()
 print("done")
