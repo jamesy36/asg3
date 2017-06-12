@@ -96,7 +96,7 @@ class PRM(object):
 		siteNum = 0
 		highest = [0,0]
 		for ack in logs:
-			if(int(ack[0][0]) > ballotNum or int((ack[0][0]) == ballotNum and log[0][1] > siteNum)):
+			if(logs[0][0] > ballotNum or (logs[0][0] == ballotNum and log[0][1] > siteNum)):
 				ballotNum = logs[0][1]
 				siteNum = logs[0][1]
 				highest = [ballotNum, siteNum]
@@ -117,8 +117,6 @@ class PRM(object):
 			if(ready[0]):
 			        print("PRM: socket ready to receive")
 				data = sock.recv(1024).decode()
-				while(data[-1] != "*"):
-					data += sock.recv(1024).decode()
 				#print(data)
 				#above to help with debug
 				splitData = data.split("*")
@@ -163,7 +161,7 @@ class PRM(object):
 					
 					elif(process[0].find("print") != -1):
                                                 print("PRM: print")
-						result = self.printFiles(log) 
+						result = printFiles(log) 
 						for c in outgoingTCP.keys():
 						    if(c == "cli"):
 						        sock = outgoingTCP.get(c)

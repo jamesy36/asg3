@@ -31,7 +31,8 @@ class cli:
        self.socket_to_map = None
        self.socket_to_reduce = None
        self.prmSock = socket(AF_INET, SOCK_STREAM)
-       self.mapSock = None
+       self.mapSock1 = socket(AF_INET, SOCK_STREAM) 
+       self.mapSock2 = socket(AF_INET, SOCK_STREAM)
        self.reducerSock = socket(AF_INET, SOCK_STREAM) 
        self.mapsockets = []
        self.server = socket(AF_INET, SOCK_STREAM)
@@ -91,8 +92,14 @@ class cli:
             offset += 1
         msg1 = f + " " + "0" + " " + str(offset) + "*" #issue here can't add f and str
         msg2 = f + " " + str(offset) + " " + str(file_size//2) + "*"
-        mapSock1.sendall(msg1.encode())
-        mapSock2.sendall(msg2.encode())
+        try:
+            self.mapSock1.sendall(msg1.encode())
+        except socket.error:
+            time.sleep(5)
+        try:
+            self.mapSock2.sendall(msg2.encode())
+        except socket.error:
+            time.sleep(5)
         receive(incomingTCP)
 
     def fileTranslation(file):
@@ -107,11 +114,16 @@ class cli:
 
     def mapperConnect(self, ID, port):
         #connect to mapper
-        s = socket(AF_INET, SOCK_STREAM)
+        #s = socket(AF_INET, SOCK_STREAM)
         addr = (self.ip, int(port))
         print("connecting to mapper " + str(ID))
-        s.connect(addr)
-        outgoingTCP["mapper" + str(ID)] = s 
+        if ID == 1:
+            self.mapSock1.connect(addr)
+            outgoingTCP["mapper" + str(ID)] = self.mapSock1
+        elif ID == 2:
+            self.mapSock2.connect(addr)
+            outgoingTCP["mapper" + str(ID)] = self.mapSock2
+        #outgoingTCP["mapper" + str(ID)] = s 
 
         #receive connection from mapper
         print("cli receiving connection from mapper " + str(ID))
@@ -179,7 +191,10 @@ class cli:
                 for i in range(1, len(input_string)):
                     files += input_string[i] + " "
                 files += "*"
-                self.reducerSock.sendall(files.encode())
+                try:
+                    self.reducerSock.sendall(files.encode())
+                except socket.error:
+                    time.sleep(5)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'print':
@@ -187,7 +202,10 @@ class cli:
                 if(len(input_string) != 1):
                     print("Print")
                     continue
-                self.prmSock.sendall("print*".encode())
+                try:
+                    self.prmSock.sendall("print*".encode())
+                except socket.error:
+                    time.sleep(5)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'stop':
@@ -195,7 +213,10 @@ class cli:
                 if(len(input_string) != 1):
                     print("stop")
                     continue
-                self.prmSock.sendall("stop*".encode())
+                try:
+                    self.prmSock.sendall("stop*".encode())
+                except socket.error:
+                    time.sleep(5)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'resume':
@@ -203,7 +224,10 @@ class cli:
                 if(len(input_string) != 1):
                     print("resume")
                     continue
-                self.prmSock.sendall("resume*".encode())
+                try:
+                    self.prmSock.sendall("resume*".encode())
+                except socket.error:
+                        time.sleep(5)
                 self.receive(incomingTCP)
             
             elif input_string[0] == 'merge':
@@ -213,7 +237,10 @@ class cli:
                     f1 = input_string[1]
                     f2 = input_string[2]
                     data = "merge" + f1 + " " + f2 + "*"
-                    self.prmSock.sendall(data.encode())
+                    try:
+                        self.prmSock.sendall(data.encode())
+                    except socket.error:
+                        time.sleep(5)
                 else:
                     print("Invalid number of args, need 3 args.")
             
@@ -228,7 +255,10 @@ class cli:
                     for i in range(1, len(input_string)):
                         data += input_string[i] + " "
                     data += "*"
-                    self.prmSock.sendall(data.encode())
+                    try:
+                        self.prmSock.sendall(data.encode())
+                    except socket.error:
+                        time.sleep(5)
                     self.receive(incomingTCP)  
            
             elif input_string[0] == 'replicate':
@@ -237,7 +267,10 @@ class cli:
                 if len(input_string) == 2:
                     f = input_string[1] #filename
                     data = "replicate" + input_string[1] + "*"
-                    self.prmSock.sendall(data.encode())
+                    try:
+                        self.prmSock.sendall(data.encode())
+                    except socket.error:
+                        time.sleep(5)
                     self.receive(incomingTCP)
                 else:
                     print("Invalid number of args, need 2 args.")
