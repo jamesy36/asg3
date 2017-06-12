@@ -137,7 +137,7 @@ class PRM(object):
 					#WE NEED TO INCLUDE A FAIL SAFE IN CASE self CRASHES
 					#BACKUP self?!?!?!?!!?
 					elif(not process and stop and process[0] == " "):
-                                            print("PRM: error: process has been stopped")
+                                                print("PRM: error: process has been stopped")
                                                 if(stop and (process != 0) and process.find("decide") != -1):
                                                     key = process[1]
                                                     value = process[2]

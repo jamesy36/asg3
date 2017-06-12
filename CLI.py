@@ -186,7 +186,7 @@ class cli:
                 print("CLI: print")
                 if(len(input_string) != 1):
                     print("Print")
-                        continue
+                    continue
                 self.prmSock.sendall("print*".encode())
                 self.receive(incomingTCP)
             
