@@ -113,7 +113,9 @@ class PRM(object):
 		for i in channels.keys():
 			sock = channels.get(i)	
 			ready = select.select([sock], [], [], 1)
+                        print("PRM: ready to receive command")
 			if(ready[0]):
+			        print("PRM: socket ready to receive")
 				data = sock.recv(1024).decode()
 				#print(data)
 				#above to help with debug
@@ -124,7 +126,7 @@ class PRM(object):
 				for data in range(0 , len(splitData) - 1):
 					process = splitData[data].split()
 					sys.stdout.write("processes:")
-					print(process)
+                                        print("PRM: ", process[0])
 					if(process[0].find("resume") != -1):
 						#in case we're rerunning it
                                                 print("PRM: resume")
