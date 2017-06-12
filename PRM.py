@@ -96,7 +96,7 @@ class PRM(object):
 		siteNum = 0
 		highest = [0,0]
 		for ack in logs:
-			if(int(ack[0][0]) > ballotNum or (logs[0][0] == ballotNum and int(ack([0][1]) > siteNum)):
+			if(int(ack[0][0]) > ballotNum or int(ack[0][0]) == ballotNum and int(ack([0][1]) > siteNum)):
 				ballotNum = logs[0][1]
 				siteNum = logs[0][1]
 				highest = [ballotNum, siteNum]
