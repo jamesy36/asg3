@@ -19,7 +19,7 @@ class PRM(object):
 
 	
 
-	def _init_(self, index, id ):
+	def _init_(self):
 	    self.accepts = dict()
 	    self.ballotNum = [0, 0] 
 	    self.ackList = [] #we need to keep track of the acks from other siteInf

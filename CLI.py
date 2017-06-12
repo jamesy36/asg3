@@ -28,6 +28,7 @@ class cli:
     def __init__(self):
        #needs to be able to determine how many sockets there will be
        #needs to keep track of prm sockets
+       self.stop_comm = True 
        self.socket_to_map = None
        self.socket_to_reduce = None
        self.prmSock = socket(AF_INET, SOCK_STREAM)
@@ -105,7 +106,7 @@ class cli:
         except error:
             time.sleep(5)
             print("CLI: mapsock2 not sent, mapFile")
-        receive(incomingTCP)
+        self.receive(incomingTCP)
 
     def fileTranslation(File):
         result = ""
@@ -290,6 +291,7 @@ class cli:
 
             elif input_string[0] == 'exit':
                 cont = False
+                self.stop_comm = False
             
             else:
                 print("no matching command found.")
@@ -310,6 +312,6 @@ print("Outgoing TCP: ", outgoingTCP)
 print("-----------------------")
 print("Incoming TCP: ", incomingTCP)
 print("-----------------------")
-while True:
+while self.stop_comm:
     test.commands()
 print("done")

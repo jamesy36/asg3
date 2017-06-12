@@ -80,6 +80,7 @@ while(True):
 			for i in range(1, len(input_string)):
 			    f = input_string[i]
 			    g.append(f)
+			print("REDUCER: g line 83:", g)
 			reducer(g, File)
 			Ssock = outgoingTCP[0]
 			send = "Reducer finished"
